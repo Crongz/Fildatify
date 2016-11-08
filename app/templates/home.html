@@ -1,0 +1,63 @@
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Fildafiy</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="./media/favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+
+  <body>
+    <a href="register" class="btn btn-primary">Register</a>
+
+    <div class="row">
+      <div class="col-md-4">
+        <b>All User</b>
+        <ul class="list-group">
+          {% for user in users %}
+            <li class="list-group-item">
+              {% for data in user %}
+                {{data}}
+              {% endfor %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <b>Selects all of the cast information corresponding with the movie having the id of 287640.</b>
+        <p>SELECT * FROM cast_info WHERE movie_id = 287640</p>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <b>id/person_id/movie_id/person_role_id/note/nr_orders/role_id</b>
+          </li>
+          {% for movie in movies %}
+            <li class="list-group-item">
+              {% for data in movie %}
+                {{data}}
+              {% endfor %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <b>This query selects the names of all of the cast members of all movies with “Batman”.</b>
+        <p>SELECT title.title, name.name FROM title INNER JOIN cast_info ON cast_info.movie_id = title.id INNER JOIN name  ON name.id = cast_info.person_id WHERE title like '%Batman%' LIMIT 50</p>
+        <ul class="list-group">
+          {% for movie in joins %}
+            <li class="list-group-item">
+              {% for data in movie %}
+                {{data}}
+              {% endfor %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </body>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</html>

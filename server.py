@@ -1,7 +1,5 @@
-from flask import Flask
-app = Flask(__name__)
-
-from view import view
+from app import app
+from app.view import view
 app.register_blueprint(view)
 
 if __name__ == "__main__":
