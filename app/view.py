@@ -7,7 +7,7 @@ view = Blueprint('view', __name__, template_folder='templates', static_folder='s
 
 
 try:
-    conn = psycopg2.connect("dbname='filmdatify' user='filmdatify' host='localhost' password='veryInsecure74'")
+    conn = psycopg2.connect(dbname='filmdatify', user='filmdatify', host='fa16-cs411-06.cs.illinois.edu', port=5432 , password='veryInsecure74')
     conn.autocommit = True
     cur = conn.cursor()
 except:
