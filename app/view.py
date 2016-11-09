@@ -1,17 +1,14 @@
 from flask import Blueprint, render_template, abort, request, redirect, url_for
 from jinja2 import TemplateNotFound
 from app.models import User
-import psycopg2
+from app import db
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
 
-
-try:
-    conn = psycopg2.connect(dbname='filmdatify', user='filmdatify', host='fa16-cs411-06.cs.illinois.edu', port=5432 , password='veryInsecure74')
-    conn.autocommit = True
-    cur = conn.cursor()
-except:
-    print ("I am unable to connect to the database")
+sql ='select * from public.users'
+result = db.engine.execute(sql)
+for item in result:
+	print(item)
 
 @view.route('/', methods=['GET'])
 def home():
