@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, abort, flash, request, redirect, url_for
-from flask_login import login_required, login_user, logout_user 
+from flask_login import login_required, login_user, logout_user, current_user
 from jinja2 import TemplateNotFound
-from sqlalchemy.sql import text, bindparam
 from app import db, login_manager
 from app.models import User
+from app.forms import *
+
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
 
@@ -34,7 +35,9 @@ print result ->
 def load_user(user_id):
     sql = "SELECT * FROM public.users WHERE id='{}' LIMIT 1".format(user_id)
     data = connection.execute(sql).fetchone()
-    return User(data)
+    user = User()
+    user.loadData(data)
+    return user
 
 """
 Dashboard
@@ -51,7 +54,7 @@ Login
 - Users can login with their email and password
 
 Successful: Dashboard page (view.home)
-Failed: render Home page
+Failed: render Home page with Error
 
 """
 @view.route('/login', methods=['POST'])
@@ -59,7 +62,8 @@ def login():
     sql = "SELECT * FROM public.users WHERE email='{}' and password='{}' LIMIT 1".format(request.form['email'], request.form['password'])
     result = connection.execute(sql).fetchone()
     if result != None:
-        user = User(result)
+        user = User()
+        user.loadData(result)
         login_user(user)
         flash('Successfully Login', 'Success')
     else:
@@ -80,38 +84,45 @@ def logout():
 Register
 - Users can register with their information
 
-Successful: Login page (view.login)
-Failed: render Home page
+Successful: Home page (view.home)
+Failed: render Register page with Error
 """
 @view.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
+    form = RegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
         try:
             sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location) VALUES ('{}','{}','{}','{}','{}','{}','{}')"\
-            .format(request.form['email'], request.form['password'], request.form['gender'], request.form['gender'], request.form['birthdate'], request.form['name'], '(40.7128, 74.0059)')
+            .format(form.data['email'], form.data['password'], form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['name'], form.data['location'])
             connection.execute(sql)
-            flash('Successfully Login', 'Success')
+            flash('Successfully Registered', 'Success')
             return redirect(url_for('view.home'))
         except:
             flash('Something went wrong. Please try it again', 'Error')
-            return render_template('register.html')
-    else:
-        return render_template('register.html')
+    return render_template('register.html', form=form)
 
 """
 Profile 
 - Users can edit their profile 
 
 Successful: New Profile page 
-Failed: render Profile page
+Failed: render Profile page with Error
 """
-@view.route('/profile', methods=['GET','POST'])
+@view.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    if request.method == 'POST':
-        return render_template('profile.html')
+    form = ProfileForm(obj=current_user)
+    if request.method == 'POST' and form.validate():
+        try:
+            sql = "UPDATE public.users SET (gender,interested_in,birthdate,location) = ('{}','{}','{}','{}') WHERE ID = {}"\
+            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], current_user.id)
+            connection.execute(sql)
+            flash('Successfully Updated', 'Success')
+            return redirect(url_for('view.profile'))
+        except:
+            flash('Something went wrong. Please try it again', 'Error')
     else:
-        return render_template('profile.html')
+        return render_template('profile.html', form=form)
 
 
 @view.errorhandler(404)

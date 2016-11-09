@@ -2,46 +2,73 @@
 {% block title %} Title {% endblock %}
 
 {% block body %}
-<div class="container" style="padding-top:50px; padding-bottom:50px;">
-		<div class="row">
-			<div class="panel panel-primary">
-				<div class="panel-body">
-					<form method="POST" action="/register" role="form">
-						<div class="form-group">
-							<h2>Create account</h2>
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="name">Name</label>
-							<input id="name" name="name" type="text" maxlength="50" class="form-control" required>
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="email">Email</label>
-							<input id="email" name="email" type="email" maxlength="50" class="form-control" required>
-						</div>
-          <div class="form-group">
-							<label class="control-label" for="birthdate">Birthday</label>
-							<input id="birthdate" name="birthdate" type="date" maxlength="50" class="form-control" placeholder="06/04/1987" required>
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="signupEmailagain">Gender</label>
-            <select class="form-control" name="gender">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="signupPassword">Password</label>
-							<input id="password" name="password" type="password" maxlength="25" class="form-control" placeholder="at least 6 characters" length="40">
-						</div>
-						<div class="form-group">
-							<button id="submit" type="submit" class="btn btn-info btn-block">Create your account</button>
-						</div>
-						<hr>
-						<p></p>Already have an account? <a href="#">Sign in</a></p>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container">
+  <form class="form-horizontal" role="form" action="/profile" method="POST">
+    <h2>Profile</h2>
+    {{ form.hidden_tag() }}
+    {% for field in form.errors %}
+      {% for error in form.errors[field] %}
+        <div class="alert alert-danger">
+          <strong>Error!</strong> {{error}}
+        </div>
+      {% endfor %}
+    {% endfor %}
+    <div class="form-group">
+      <label for="Name" class="col-sm-3 control-label">Full Name</label>
+      <div class="col-sm-6">
+        {{form.name(class="form-control", placeholder="Name", required=true, disabled=true)}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email" class="col-sm-3 control-label">Email</label>
+      <div class="col-sm-6">
+        {{form.email(class="form-control", placeholder="Email", required=true, disabled=true)}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password" class="col-sm-3 control-label">Password</label>
+      <div class="col-sm-6">
+        {{form.password(class="form-control", required=true, disabled=true)}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="birthDate" class="col-sm-3 control-label">Date of Birth</label>
+      <div class="col-sm-6">
+        {{form.birthdate(class="form-control", type="date", required=true)}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="country" class="col-sm-3 control-label">Location</label>
+      <div class="col-sm-6">
+        {{form.location(class="form-control", required=true)}}
+      </div>
+    </div> <!-- /.form-group -->
+    <div class="form-group">
+      <label class="control-label col-sm-3">Gender</label>
+      <div class="col-sm-6">
+        {{form.gender(class="form-control", required=true)}}
+      </div>
+    </div> <!-- /.form-group -->
+    <div class="form-group">
+      <label class="control-label col-sm-3">Interested In</label>
+      <div class="col-sm-6">
+        {{form.interested_in(class="form-control", required=true)}}
+      </div>
+    </div> <!-- /.form-group -->
+    <div class="form-group">
+      <div class="col-sm-6 col-sm-offset-3">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox">I accept <a href="#">terms</a>
+          </label>
+        </div>
+      </div>
+    </div> <!-- /.form-group -->
+    <div class="form-group">
+      <div class="col-sm-6 col-sm-offset-3">
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </div>
+    </div>
+  </form> <!-- /form -->
+</div> <!-- ./container -->
 {% endblock %}
