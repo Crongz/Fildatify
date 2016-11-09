@@ -55,19 +55,17 @@ Successful: Dashboard page (view.home)
 Failed: render Login
 
 """
-@view.route('/login', methods=['GET', 'POST'])
+@view.route('/login', methods=['POST'])
 def login():
-    error = None
-    if request.method == 'POST':
-        sql = "SELECT * FROM public.users WHERE email='{}' and password='{}' LIMIT 1".format(request.form['email'], request.form['password'])
-        result = connection.execute(sql).fetchone()
-        if result != None:
-            user = User(result)
-            login_user(user)
-            return redirect(url_for('view.home'))
-        else:
-            error = 'Invalid passowrd or email'
-    return render_template('login.html', error=error)
+    sql = "SELECT * FROM public.users WHERE email='{}' and password='{}' LIMIT 1".format(request.form['email'], request.form['password'])
+    result = connection.execute(sql).fetchone()
+    if result != None:
+        user = User(result)
+        login_user(user)
+        flash('Successfully Login', 'LoginSuccess')
+    else:
+        flash('Invalid passowrd or email', 'LoginError')
+    return redirect(url_for('view.home'))
 
 """
 Register
@@ -77,7 +75,6 @@ Successful: Login page (view.login)
 Failed: render Register page
 """
 @view.route('/register', methods=['GET', 'POST'])
-@login_required
 def register():
     error = None
     if request.method == 'POST':
@@ -101,6 +98,7 @@ Successful: New Profile page
 Failed: render Profile page
 """
 @view.route('/profile', methods=['GET','POST'])
+@login_required
 def profile():
     return render_template('profile.html')
 
