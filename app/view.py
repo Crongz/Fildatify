@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, abort, request, redirect, url_for
+from flask import Blueprint, render_template, abort, flash, request, redirect, url_for
 from flask_login import login_required, login_user, logout_user 
 from jinja2 import TemplateNotFound
+from sqlalchemy.sql import text, bindparam
 from app import db, login_manager
 from app.models import User
 
@@ -56,15 +57,17 @@ Failed: render Login
 """
 @view.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
         sql = "SELECT * FROM public.users WHERE email='{}' and password='{}' LIMIT 1".format(request.form['email'], request.form['password'])
         result = connection.execute(sql).fetchone()
-        print (result)
         if result != None:
             user = User(result)
             login_user(user)
-        return redirect(url_for('view.home'))
-    return render_template('login.html')
+            return redirect(url_for('view.home'))
+        else:
+            error = 'Invalid passowrd or email'
+    return render_template('login.html', error=error)
 
 """
 Register
@@ -74,17 +77,21 @@ Successful: Login page (view.login)
 Failed: render Register page
 """
 @view.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
+    error = None
     if request.method == 'POST':
         try:
-            sql = """INSERT INTO "public"."users" ("email","password","gender","interested_in","birthdate","name","location") VALUES ('%s','%s','%s', '%s', '%s', '%s', '%s')""" % (request.form['email'], request.form['password'], request.form['gender'], request.form['gender'], request.form['birthdate'], request.form['name'], '(40.7128, 74.0059)')
-            cur.execute(sql)
+            sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location) VALUES ('{}','{}','{}','{}','{}','{}','{}')"\
+            .format(request.form['email'], request.form['password'], request.form['gender'], request.form['gender'], request.form['birthdate'], request.form['name'], '(40.7128, 74.0059)')
+            connection.execute(sql)
+            flash('You were successfully registered')
+            return redirect(url_for('view.login'))
         except:
-            print ("Cannot Insert")
-
-        return redirect(url_for('view.home'))
+            error = 'Something went wrong. Try it again.'
+            return render_template('register.html')
     else:
-        return render_template('register.html')
+        return render_template('register.html', error=error)
 
 """
 Profile 

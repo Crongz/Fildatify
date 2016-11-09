@@ -1,60 +1,62 @@
+{% extends "partials/layout.html" %}
+{% block title %} Title {% endblock %}
 
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Fildafiy</title>
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="./media/favicon.ico"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  </head>
+{% block body %}
 
-  <body>
-    <div class="container" style="padding-top:50px; padding-bottom:50px;">
-   		<div class="row">
-   			<div class="panel panel-primary">
-   				<div class="panel-body">
-   					<form method="POST" action="/register" role="form">
-   						<div class="form-group">
-   							<h2>Create account</h2>
-   						</div>
-   						<div class="form-group">
-   							<label class="control-label" for="name">Name</label>
-   							<input id="name" name="name" type="text" maxlength="50" class="form-control" required>
-   						</div>
-   						<div class="form-group">
-   							<label class="control-label" for="email">Email</label>
-   							<input id="email" name="email" type="email" maxlength="50" class="form-control" required>
-   						</div>
-              <div class="form-group">
-   							<label class="control-label" for="birthdate">Birthday</label>
-   							<input id="birthdate" name="birthdate" type="date" maxlength="50" class="form-control" placeholder="06/04/1987" required>
-   						</div>
-   						<div class="form-group">
-   							<label class="control-label" for="signupEmailagain">Gender</label>
-                <select class="form-control" name="gender">
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-   						</div>
-   						<div class="form-group">
-   							<label class="control-label" for="signupPassword">Password</label>
-   							<input id="password" name="password" type="password" maxlength="25" class="form-control" placeholder="at least 6 characters" length="40">
-   						</div>
-   						<div class="form-group">
-   							<button id="submit" type="submit" class="btn btn-info btn-block">Create your account</button>
-   						</div>
-   						<hr>
-   						<p></p>Already have an account? <a href="#">Sign in</a></p>
-   					</form>
-   				</div>
-   			</div>
-   		</div>
-   	</div>
-  </body>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class=flashes>
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
+{% if error %}
+  <p class=error><strong>Error:</strong> {{ error }}
+{% endif %}
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-</html>
+<div class="container" style="padding-top:50px; padding-bottom:50px;">
+		<div class="row">
+			<div class="panel panel-primary">
+				<div class="panel-body">
+					<form method="POST" action="/register" role="form">
+						<div class="form-group">
+							<h2>Create account</h2>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="name">Name</label>
+							<input id="name" name="name" type="text" maxlength="50" class="form-control" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="email">Email</label>
+							<input id="email" name="email" type="email" maxlength="50" class="form-control" required>
+						</div>
+          <div class="form-group">
+							<label class="control-label" for="birthdate">Birthday</label>
+							<input id="birthdate" name="birthdate" type="date" maxlength="50" class="form-control" placeholder="06/04/1987" required>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="signupEmailagain">Gender</label>
+            <select class="form-control" name="gender">
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="signupPassword">Password</label>
+							<input id="password" name="password" type="password" maxlength="25" class="form-control" placeholder="at least 6 characters" length="40">
+						</div>
+						<div class="form-group">
+							<button id="submit" type="submit" class="btn btn-info btn-block">Create your account</button>
+						</div>
+						<hr>
+						<p></p>Already have an account? <a href="#">Sign in</a></p>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

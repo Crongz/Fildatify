@@ -3,7 +3,6 @@ from flask_login import UserMixin
 class User(UserMixin):
 
     def __init__(self, data):
-        print ('data',data)
         self.id = data[0]
         self.gender = data[1]
         self.interested_in = data[2]
