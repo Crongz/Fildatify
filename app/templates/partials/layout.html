@@ -21,9 +21,34 @@
   {% include 'partials/Navgation.html' %}
 
   <body>
+    <div class="container">
+      {% with messages = get_flashed_messages(category_filter=["Success"]) %}
+        {% if messages %}
+          <div class="alert alert-success alert-dismissible" role="alert">
+            {% for success in messages %}
+              {{success}}
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+        {% endif %}
+      {% endwith %}
 
-  {% block body %}
-  {% endblock %}
+      {% with errors = get_flashed_messages(category_filter=["Error"]) %}
+        {% if errors %}
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            {% for error in errors %}
+              {{error}}
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          </div>
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="container">
+      {% block body %}
+      {% endblock %}
+    </div>
   </body>
 
   <div id="footerwrap">

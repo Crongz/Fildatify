@@ -2,21 +2,6 @@
 {% block title %} Title {% endblock %}
 
 {% block body %}
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class=flashes>
-    {% for message in messages %}
-      <p>{{ message }}</p>
-    {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-
-{% if error %}
-  <p class=error><strong>Error:</strong> {{ error }}
-{% endif %}
-
 <div class="container" style="padding-top:50px; padding-bottom:50px;">
 		<div class="row">
 			<div class="panel panel-primary">

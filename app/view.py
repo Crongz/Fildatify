@@ -15,7 +15,7 @@ Format connection.execute('WHATEVRE SQL QUERY') .fetchone() return tuple and fet
 If you know SQL Query is going to return only ONE tuple because you used something like 'LIMIT 1' then use .fetchone()
 Otherwise use .fetchall()
 
-There is exmaple below 
+There is exmaple below:
 """
 
 '''
@@ -27,15 +27,14 @@ print result ->
 [(7, 2, 2, datetime.date(2012, 11, 29), u'James Lee', '(40.7128,74.0059)', u'leejamesws@gmail.com', u'123'), 
  (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123'), 
  (11, 1, 0, datetime.date(1996, 8, 18), u'Vanessa Wang', '(123,123)', u'viwang2@illinois.edu', u'123')]
-
 '''
 
 
 @login_manager.user_loader
 def load_user(user_id):
     sql = "SELECT * FROM public.users WHERE id='{}' LIMIT 1".format(user_id)
-    result = connection.execute(sql).fetchone()
-    return User(result)
+    data = connection.execute(sql).fetchone()
+    return User(data)
 
 """
 Dashboard
@@ -52,7 +51,7 @@ Login
 - Users can login with their email and password
 
 Successful: Dashboard page (view.home)
-Failed: render Login
+Failed: render Home page
 
 """
 @view.route('/login', methods=['POST'])
@@ -62,9 +61,19 @@ def login():
     if result != None:
         user = User(result)
         login_user(user)
-        flash('Successfully Login', 'LoginSuccess')
+        flash('Successfully Login', 'Success')
     else:
-        flash('Invalid passowrd or email', 'LoginError')
+        flash('Invalid passowrd or email', 'Error')
+    return redirect(url_for('view.home'))
+
+"""
+Logout
+"""
+@view.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash('Successfully Logout', 'Success')
     return redirect(url_for('view.home'))
 
 """
@@ -72,23 +81,22 @@ Register
 - Users can register with their information
 
 Successful: Login page (view.login)
-Failed: render Register page
+Failed: render Home page
 """
 @view.route('/register', methods=['GET', 'POST'])
 def register():
-    error = None
     if request.method == 'POST':
         try:
             sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location) VALUES ('{}','{}','{}','{}','{}','{}','{}')"\
             .format(request.form['email'], request.form['password'], request.form['gender'], request.form['gender'], request.form['birthdate'], request.form['name'], '(40.7128, 74.0059)')
             connection.execute(sql)
-            flash('You were successfully registered')
-            return redirect(url_for('view.login'))
+            flash('Successfully Login', 'Success')
+            return redirect(url_for('view.home'))
         except:
-            error = 'Something went wrong. Try it again.'
+            flash('Something went wrong. Please try it again', 'Error')
             return render_template('register.html')
     else:
-        return render_template('register.html', error=error)
+        return render_template('register.html')
 
 """
 Profile 
@@ -100,7 +108,10 @@ Failed: render Profile page
 @view.route('/profile', methods=['GET','POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    if request.method == 'POST':
+        return render_template('profile.html')
+    else:
+        return render_template('profile.html')
 
 
 @view.errorhandler(404)
