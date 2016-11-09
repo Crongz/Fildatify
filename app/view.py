@@ -9,15 +9,26 @@ view = Blueprint('view', __name__, template_folder='templates', static_folder='s
 connection = db.engine.connect()
 
 """
-Exmaple of SQL
-result = connection.execute('select * from public.users')
-result: (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123')
+Exmaple of SQL:
+Format connection.execute('WHATEVRE SQL QUERY') .fetchone() return tuple and fetchall() return list of tuples
+If you know SQL Query is going to return only ONE tuple because you used something like 'LIMIT 1' then use .fetchone()
+Otherwise use .fetchall()
+
+There is exmaple below 
 """
 
-def Test_SQL():
-    sql = "SELECT * FROM public.users WHERE email='test@test.com' and password='123' LIMIT 1"
-    result = connection.execute(sql).fetchall()
-    print result
+'''
+result = connection.execute('select * from public.users WHERE id='9' LIMIT 1).fetchone()
+print result -> (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123')
+
+result = connection.execute('select * from public.users).fetchall()
+print result -> 
+[(7, 2, 2, datetime.date(2012, 11, 29), u'James Lee', '(40.7128,74.0059)', u'leejamesws@gmail.com', u'123'), 
+ (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123'), 
+ (11, 1, 0, datetime.date(1996, 8, 18), u'Vanessa Wang', '(123,123)', u'viwang2@illinois.edu', u'123')]
+
+'''
+
 
 @login_manager.user_loader
 def load_user(user_id):
