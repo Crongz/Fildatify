@@ -1,19 +1,16 @@
-class User:
-    def __init__(self, id, name, email, password, birthdate, location, gender="1", interested_in="1"):
-        self.id = id
-        self.name = name
-        self.email = email
-        self.birthdate = birthdate
-        self.location = location
-        self.gender = gender
-        self.interested_in = interested_in
+from flask_login import UserMixin
 
-    def is_active(self):
-        """True, as all users are active."""
-        return True
+class User(UserMixin):
 
-    def get_id(self):
-        return self.id
-
+    def __init__(self, data):
+        print ('data',data)
+        self.id = data[0]
+        self.gender = data[1]
+        self.interested_in = data[2]
+        self.birthdate = data[3]
+        self.name = data[4]
+        self.location = data[5]
+        self.email = data[6]
+        
     def __repr__(self):
-        return '<User %r>' % (self.name)
+        return "{}/{}/{}".format(self.id, self.name, self.email)

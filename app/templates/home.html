@@ -2,6 +2,11 @@
 {% block title %} Title {% endblock %}
 
 {% block body %}
+
+{% if current_user.is_authenticated %}
+  Hi {{ current_user.name }}!
+{% endif %}
+
 <div>
   <p>test</p>
 </div>
