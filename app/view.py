@@ -50,6 +50,20 @@ def home():
     return render_template('home.html')
 
 """
+About
+"""
+@view.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
+"""
+Match
+"""
+@view.route('/match', methods=['GET'])
+def match():
+    return render_template('match.html')
+
+"""
 Login
 - Users can login with their email and password
 
