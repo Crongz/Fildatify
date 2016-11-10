@@ -6,7 +6,7 @@
     background-color:rgba(255,255,255,.8);
 }
 #login-dp .help-block{
-    font-size:12px    
+    font-size:12px
 }
 #login-dp .bottom{
     background-color:rgba(255,255,255,.8);
@@ -15,7 +15,7 @@
     padding:14px;
 }
 #login-dp .social-buttons{
-    margin:12px 0    
+    margin:12px 0
 }
 #login-dp .social-buttons a{
     width: 49%;
@@ -29,7 +29,7 @@
 }
 .btn-fb:hover{
     color: #fff;
-    background-color:#496ebc 
+    background-color:#496ebc
 }
 .btn-tw{
     color: #fff;
@@ -48,4 +48,9 @@
         background-color: inherit;
         border-top:0 none;
     }
+}
+
+#match-container {
+  padding-top:10px;
+  background: rgba(0,0,0,0.1);
 }
