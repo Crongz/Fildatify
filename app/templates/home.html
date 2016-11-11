@@ -77,6 +77,12 @@ h1 {
                           </span>
 			        </div>
             </form>
+                {% if result %}
+                    <h3>Results</h3>
+                    {% for row in result %}
+                        {{ row[0] }} ({{ row[1] }})<br>
+                    {% endfor %}
+                {% endif %}
 				</div>
 
 		<div class="col-md-3 col-xs-offset-1" id="popular">
