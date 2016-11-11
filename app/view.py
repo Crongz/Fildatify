@@ -4,6 +4,7 @@ from jinja2 import TemplateNotFound
 from app import db, login_manager
 from app.models import User
 from app.forms import *
+from sqlalchemy.sql import text
 
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
@@ -47,7 +48,61 @@ Dashboard
 """
 @view.route('/', methods=['GET'])
 def home():
-    return render_template('home.html')
+    genre_options = [
+        'Experimental',
+        'Western',
+        'Animation',
+        'War',
+        'History',
+        'Musical',
+        'Reality-TV',
+        'Documentary',
+        'Sci-Fi',
+        'Short',
+        'Thriller',
+        'Film-Noir',
+        'Biography',
+        'Horror',
+        'Action',
+        'Comedy',
+        'Commercial',
+        'Family',
+        'Adventure',
+        'Talk-Show',
+        'Lifestyle',
+        'Romance',
+        'Drama',
+        'Fantasy',
+        'Sport',
+        'Mystery',
+        'Crime',
+        'Music'
+    ]
+
+    # ACTOR ROLE TYPE = (1,2) (actor,actress)
+    # DIRECTOR=8
+
+    # "WHERE title.kind_id=1 AND LOWER(name.name) LIKE \'%%%s%%\'"
+
+    search_genre = None
+    search_actor = None
+    search_title = None
+
+    where = []
+    if search_genre is not None:
+        where += "movie_info.info=%(genre)%s"
+    if search_actor is not None:
+        where += "LOWER(name.name) LIKE %(name)%s"
+    if search_title is not None:
+        where += "LOWER(title.title) LIKE %(title)%s"
+
+    query = ''' SELECT title.*, movie_info.info FROM title
+    INNER JOIN cast_info ON cast_info.movie_id=title.id
+    INNER JOIN name ON cast_info.person_id=name.id
+    INNER JOIN movie_info ON movie_info.id=title.id
+    '''
+
+    return render_template('home.html', genre_options=sorted(genre_options))
 
 """
 About
@@ -73,8 +128,8 @@ Failed: render Home page with Error
 """
 @view.route('/login', methods=['POST'])
 def login():
-    sql = "SELECT * FROM public.users WHERE email='{}' and password='{}' LIMIT 1".format(request.form['email'], request.form['password'])
-    result = connection.execute(sql).fetchone()
+    sql = "SELECT * FROM public.users WHERE email=:email and password=:password LIMIT 1"
+    result = connection.execute(text(sql), email=request.form['email'], password=request.form['password']).fetchone()
     if result != None:
         user = User()
         user.loadData(result)

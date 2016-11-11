@@ -21,37 +21,37 @@ h1 {
 				<div class="row" id="match-container">
 					<div class="col-sm-2 match-col text-center">
 						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name<h5>
+						<h5>Name (advanced functionality, will be added later)</h5>
 						<p>Age</p>
 						<p>Location</p>
 					</div>
 					<div class="col-sm-2 match-col text-center">
 						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name<h5>
+						<h5>Name</h5>
 						<p>Age</p>
 						<p>Location</p>
 					</div>
 					<div class="col-sm-2 match-col text-center">
 						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name<h5>
+						<h5>Name</h5>
 						<p>Age</p>
 						<p>Location</p>
 					</div>
 					<div class="col-sm-2 match-col text-center">
 						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name<h5>
+						<h5>Name</h5>
 						<p>Age</p>
 						<p>Location</p>
 					</div>
 					<div class="col-sm-2 match-col text-center">
 						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name<h5>
+						<h5>Name</h5>
 						<p>Age</p>
 						<p>Location</p>
 					</div>
 					<div class="col-sm-2 match-col text-center">
 						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name<h5>
+						<h5>Name</h5>
 						<p>Age</p>
 						<p>Location</p>
 					</div>
@@ -59,16 +59,26 @@ h1 {
 				</div>
 				<!--Search for movies-->
 					<h3>Search for...</h3>
+            <form action="" method="post" class="form">
 					<div class="input-group">
-			      <span><input type="text" class="form-control" placeholder="Movie" style="width: 22%; margin:10px"></span>
-						<span><input type="text" class="form-control" placeholder="with Actor" style="width: 22%; margin:10px"></span>
-						<span><input type="text" class="form-control" placeholder="by Director" style="width: 22%; margin:10px"></span>
-						<span><input type="text" class="form-control" placeholder="in Genre" style="width: 22%; margin:10px"></span>
-			      <span class="input-group-btn">
-			        <button class="btn btn-default" type="button">Search</button>
-			      </span>
-			    </div>
+			            <span><input name="movie" type="text" class="form-control" placeholder="Movie" style="width: 22%; margin:10px"></span>
+						<span><input name="actor" type="text" class="form-control" placeholder="with Actor" style="width: 22%; margin:10px"></span>
+						<!--<span><input name="director" type="text" class="form-control" placeholder="by Director" style="width: 22%; margin:10px"></span>-->
+                            <span>
+                                <select id="genrebox" name="genrebox" class="form-control" style="width: 22%; margin:10px">
+                                    <option value="">In genre...</option>
+                                    {% for genre in genre_options %}
+                                    <option value="{{ genre }}">{{ genre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </span>
+                          <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Search</button>
+                          </span>
+			        </div>
+            </form>
 				</div>
+
 		<div class="col-md-3 col-xs-offset-1" id="popular">
 			<h3>Recommended Movies</h3>
 			<div class="list-group">
