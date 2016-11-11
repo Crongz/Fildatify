@@ -2,165 +2,78 @@
 {% block title %} FilmDatify {% endblock %}
 
 {% block body %}
+
 <style>
-h1 {
-	font-family: "Helvetica";
-	text-align: center;
- }
+  p{
+  	display: block;
+    margin-top: 1em;
+    margin-bottom: 4em;
+    margin-left: 11em;
+    margin-right: 11em;
+  }
 
+  h1{ 
+  	font-family: "Helvetica";
+  	text-align: center;
+  }
+  .navbar{
+    margin-bottom: 0px;
+  }
+  .alert{
+    padding-top:10px;
+    position: absolute;
+    width:80%;
+    z-index: 10;
+  }
 </style>
-<div>
-  <h1>Your Dashboard</h1>
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel" data-slide-to="1"></li>
+    <li data-target="#myCarousel" data-slide-to="2"></li>
+    <li data-target="#myCarousel" data-slide-to="3"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="item active">
+      <img src="{{ url_for('static', filename='images/carousel1.jpg') }}">
+    </div>
+
+    <div class="item">
+      <img src="{{ url_for('static', filename='images/carousel2.jpg') }}">
+    </div>
+
+    <div class="item">
+      <img src="{{ url_for('static', filename='images/carousel3.jpg') }}">
+    </div>    
+
+    <div class="item">
+      <img src="{{ url_for('static', filename='images/carousel4.jpg') }}">
+    </div>
+       
+  </div>
+
+  <!-- Left and right controls -->
+  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
 </div>
-
-<div class="container">
-	<div class="row">
-		<div class="col-md-8">
-			<div>
-				<h2>Your Matches</h2>
-				<div class="row" id="match-container">
-					<div class="col-sm-2 match-col text-center">
-						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name (advanced functionality, will be added later)</h5>
-						<p>Age</p>
-						<p>Location</p>
-					</div>
-					<div class="col-sm-2 match-col text-center">
-						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name</h5>
-						<p>Age</p>
-						<p>Location</p>
-					</div>
-					<div class="col-sm-2 match-col text-center">
-						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name</h5>
-						<p>Age</p>
-						<p>Location</p>
-					</div>
-					<div class="col-sm-2 match-col text-center">
-						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name</h5>
-						<p>Age</p>
-						<p>Location</p>
-					</div>
-					<div class="col-sm-2 match-col text-center">
-						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name</h5>
-						<p>Age</p>
-						<p>Location</p>
-					</div>
-					<div class="col-sm-2 match-col text-center">
-						<img class="img-responsive" src="http://placehold.it/150x150"/>
-						<h5>Name</h5>
-						<p>Age</p>
-						<p>Location</p>
-					</div>
-				</div>
-				</div>
-				<!--Search for movies-->
-					<h3>Search for...</h3>
-            <form action="" method="post" class="form">
-					<div class="input-group">
-			            <span><input name="movie" type="text" class="form-control" placeholder="Movie" style="width: 22%; margin:10px"></span>
-						<span><input name="actor" type="text" class="form-control" placeholder="with Actor" style="width: 22%; margin:10px"></span>
-						<!--<span><input name="director" type="text" class="form-control" placeholder="by Director" style="width: 22%; margin:10px"></span>-->
-                            <span>
-                                <select id="genrebox" name="genrebox" class="form-control" style="width: 22%; margin:10px">
-                                    <option value="">In genre...</option>
-                                    {% for genre in genre_options %}
-                                    <option value="{{ genre }}">{{ genre }}</option>
-                                    {% endfor %}
-                                </select>
-                            </span>
-                          <span class="input-group-btn">
-                            <button class="btn btn-default" type="submit">Search</button>
-                          </span>
-			        </div>
-            </form>
-                {% if result %}
-                    <h3>Results</h3>
-                    {% for row in result %}
-                        {{ row[0] }} ({{ row[1] }})<br>
-                    {% endfor %}
-                {% endif %}
-				</div>
-
-		<div class="col-md-3 col-xs-offset-1" id="popular">
-			<h3>Recommended Movies</h3>
-			<div class="list-group">
-			  <a href="#" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="#" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="#" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="#" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="#" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-			</div>
-
-		</div>
-	</div>
+</div>
+<br>
+<br>
+<div>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris quis arcu leo. Donec metus felis, pellentesque placerat neque eu, viverra vehicula velit. Phasellus laoreet risus dui, id porttitor neque porttitor sit amet. Duis consectetur eros sit amet malesuada posuere. Praesent in leo quis libero mollis sodales. Cras a viverra est. Nullam a ornare est. Etiam mattis, dolor ac euismod ornare, purus turpis dapibus sem, id ultrices massa dui a odio. Donec id tortor a magna lobortis dapibus. Aliquam cursus, erat et placerat convallis, purus ante ornare nunc, vitae molestie neque tortor ac risus.
+		<br><br>
+		Integer eget mi tortor. Praesent ipsum metus, posuere et aliquet fermentum, gravida eu justo. Integer porta tempus molestie. Ut rhoncus cursus nibh congue mattis. Quisque maximus ac lectus quis pharetra. Praesent tempus iaculis quam, auctor posuere libero venenatis vel. Aliquam auctor massa in sagittis malesuada. Etiam id pharetra dolor. Cras scelerisque ante sem, quis dignissim arcu sollicitudin sit amet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus cursus urna nisl, vitae blandit turpis porta quis. Suspendisse elementum bibendum enim a dignissim. 
+	</p>
 </div>
 {% endblock %}

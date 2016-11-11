@@ -41,13 +41,21 @@ def load_user(user_id):
     return user
 
 """
+Home
+"""
+@view.route('/', methods=['GET'])
+def home():
+    return render_template('home.html')
+
+
+"""
 Dashboard
 - User search movies, actors, directors and like them -> save like infomation into DB
 - User see who they are match with 
 - User can see suggested movies based on what they liked 
 """
-@view.route('/', methods=['GET', 'POST'])
-def home():
+@view.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
     genre_options = [
         'Experimental',
         'Western',
@@ -122,7 +130,7 @@ def home():
 
         if len(where) < 1:
             flash('Must provide at least one search term.', 'error')
-            return render_template('home.html', genre_options=sorted(genre_options))
+            return render_template('dashboard.html', genre_options=sorted(genre_options))
 
         query += " AND "
         for i, clause in enumerate(where):
@@ -132,34 +140,35 @@ def home():
 
         query += " LIMIT 10"
         result = connection.execute(text(query), **params).fetchall()
-        return render_template('home.html', genre_options=sorted(genre_options),
+        return render_template('dashboard.html', genre_options=sorted(genre_options),
                                last_title=search_title,
                                last_actor=search_actor,
                                last_genre=search_genre,
                                result=result
        )
 
-    return render_template('home.html', genre_options=sorted(genre_options))
-
-"""
-About
-"""
-@view.route('/about', methods=['GET'])
-def about():
-    return render_template('about.html')
+    return render_template('dashboard.html', genre_options=sorted(genre_options))
 
 """
 Match
 """
-@view.route('/match', methods=['GET'])
-def match():
-    return render_template('match.html')
+@view.route('/matchDetail', methods=['GET'])
+def matchDetail():
+    return render_template('matchDetail.html')
+
+"""
+Matches
+"""
+@view.route('/matches', methods=['GET'])
+def matches():
+    return render_template('matches.html')
+
 
 """
 Login
 - Users can login with their email and password
 
-Successful: Dashboard page (view.home)
+Successful: Dashboard page (view.dashboard)
 Failed: render Home page with Error
 
 """
@@ -172,12 +181,15 @@ def login():
         user.loadData(result)
         login_user(user)
         flash('Successfully Login', 'Success')
+        return redirect(url_for('view.dashboard'))
     else:
         flash('Invalid passowrd or email', 'Error')
     return redirect(url_for('view.home'))
 
 """
 Logout
+Successful: Home page (view.home)
+
 """
 @view.route("/logout")
 @login_required

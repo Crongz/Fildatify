@@ -13,8 +13,10 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/about">About</a></li>
-        <li><a href="/match">Match</a></li>
+        {% if current_user.is_authenticated %}
+          <li><a href="/dashboard">DashBoard</a></li>
+          <li><a href="/matches">Matches</a></li>
+        {% endif %}
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated %}
