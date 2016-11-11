@@ -68,24 +68,34 @@
 		            <span><input name="movie" type="text" class="form-control" placeholder="Movie" style="width: 22%; margin:10px"></span>
 					<span><input name="actor" type="text" class="form-control" placeholder="with Actor" style="width: 22%; margin:10px"></span>
 					<!--<span><input name="director" type="text" class="form-control" placeholder="by Director" style="width: 22%; margin:10px"></span>-->
-                        <span>
-                            <select id="genrebox" name="genrebox" class="form-control" style="width: 22%; margin:10px">
-                                <option value="">In genre...</option>
-                                {% for genre in genre_options %}
-                                <option value="{{ genre }}">{{ genre }}</option>
-                                {% endfor %}
-                            </select>
-                        </span>
-                      <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">Search</button>
-                      </span>
+                    <span>
+                        <select id="genrebox" name="genrebox" class="form-control" style="width: 22%; margin:10px">
+							<option value="">In genre...</option>
+							{% for genre in genre_options %}
+							<option value="{{ genre }}">{{ genre }}</option>
+							{% endfor %}
+                        </select>
+                    </span>
+                    <span class="input-group-btn">
+                    	<button class="btn btn-default" type="submit">Search</button>
+                    </span>
 		        </div>
             </form>
+            <h3>Results</h3>
             {% if result %}
-                <h3>Results</h3>
-                {% for row in result %}
-                    {{ row[0] }} ({{ row[1] }})<br>
-                {% endfor %}
+	            <ul class="list-group">
+					{% for row in result %}
+						<li class="list-group-item">
+							{{ row[0] }} ({{ row[1] }})
+		                    <span class="pull-right">
+		                        <span class="btn btn-default">
+		                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+		                        </span>
+		                    </span>
+		                    <div class="clearfix"></div>
+						</li>
+					{% endfor %}
+				</ul>
             {% endif %}
 		</div>
 

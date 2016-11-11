@@ -55,6 +55,7 @@ Dashboard
 - User can see suggested movies based on what they liked 
 """
 @view.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def dashboard():
     genre_options = [
         'Experimental',
@@ -138,8 +139,9 @@ def dashboard():
             if i != len(where) - 1:
                 query += " AND "
 
-        query += " LIMIT 10"
+        query += " LIMIT 20"
         result = connection.execute(text(query), **params).fetchall()
+        print (result)
         return render_template('dashboard.html', genre_options=sorted(genre_options),
                                last_title=search_title,
                                last_actor=search_actor,
