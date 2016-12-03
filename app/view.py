@@ -152,18 +152,16 @@ def dashboard():
     return render_template('dashboard.html', genre_options=sorted(genre_options))
 
 """
-Match
-"""
-@view.route('/matchDetail', methods=['GET'])
-def matchDetail():
-    return render_template('matchDetail.html')
-
-"""
 Matches
 """
 @view.route('/matches', methods=['GET'])
 def matches():
     return render_template('matches.html')
+
+@view.route('/matchDetail', methods=['GET'])
+def matchDetail():
+    return render_template('matchDetail.html')
+
 
 
 """
