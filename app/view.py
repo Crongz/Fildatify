@@ -5,7 +5,7 @@ from app import db, login_manager
 from app.models import User
 from app.forms import *
 from sqlalchemy.sql import text
-
+import os
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
 
@@ -155,10 +155,12 @@ def dashboard():
 Matches
 """
 @view.route('/matches', methods=['GET'])
+@login_required
 def matches():
     return render_template('matches.html')
 
 @view.route('/matchDetail', methods=['GET'])
+@login_required
 def matchDetail():
     return render_template('matchDetail.html')
 
@@ -212,7 +214,11 @@ def register():
         try:
             sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location) VALUES ('{}','{}','{}','{}','{}','{}','{}')"\
             .format(form.data['email'], form.data['password'], form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['name'], form.data['location'])
-            connection.execute(sql)
+            image_data = request.FILES[form.image.name].read()
+            open(os.path.join('/', form.image.data), 'w').write(image_data)
+            # connection.execute(sql)
+            # sql = "SELECT * FROM public.users (email, password, gender, interested_in, birthdate, name, location) VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, :location)"
+            # connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], location=form.data['location'])
             flash('Successfully Registered', 'Success')
             return redirect(url_for('view.home'))
         except:
