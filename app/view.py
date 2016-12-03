@@ -166,6 +166,11 @@ def matches():
 def matchDetail():
     return render_template('matchDetail.html')
 
+@view.route('/movieDetail', methods=['GET'])
+@login_required
+def movieDetail():
+    return render_template('movieDetail.html')
+
 """
 Login
 - Users can login with their email and password
