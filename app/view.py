@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template, abort, flash, request, redirect, url_for
 from flask_login import login_required, login_user, logout_user, current_user
+from werkzeug.utils import secure_filename
 from jinja2 import TemplateNotFound
 from app import db, login_manager
 from app.models import User
 from app.forms import *
 from sqlalchemy.sql import text
 import os
+import hashlib
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
 
@@ -164,8 +166,6 @@ def matches():
 def matchDetail():
     return render_template('matchDetail.html')
 
-
-
 """
 Login
 - Users can login with their email and password
@@ -207,16 +207,27 @@ Register
 Successful: Home page (view.home)
 Failed: render Register page with Error
 """
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
 @view.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         try:
-            sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location) VALUES ('{}','{}','{}','{}','{}','{}','{}')"\
-            .format(form.data['email'], form.data['password'], form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['name'], form.data['location'])
-            image_data = request.FILES[form.image.name].read()
-            open(os.path.join('/', form.image.data), 'w').write(image_data)
-            # connection.execute(sql)
+            file = request.files['file']
+            filename = ''
+            if file and allowed_file(file.filename):
+                hashKey = hashlib.md5(file.read()).hexdigest() 
+                filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
+                file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
+            sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location,picture_url,provided_location) VALUES ('{}','{}','{}','{}','{}','{}','{}','{}','{}')"\
+            .format(form.data['email'], form.data['password'], form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['name'], form.data['location'],filename, form.data['zipcode'])
+            connection.execute(sql)
             # sql = "SELECT * FROM public.users (email, password, gender, interested_in, birthdate, name, location) VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, :location)"
             # connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], location=form.data['location'])
             flash('Successfully Registered', 'Success')
@@ -238,8 +249,14 @@ def profile():
     form = ProfileForm(obj=current_user)
     if request.method == 'POST' and form.validate():
         try:
-            sql = "UPDATE public.users SET (gender,interested_in,birthdate,location) = ('{}','{}','{}','{}') WHERE ID = {}"\
-            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], current_user.id)
+            file = request.files['file']
+            filename = ''
+            if file and allowed_file(file.filename):
+                hashKey = hashlib.md5(file.read()).hexdigest() 
+                filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
+                file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
+            sql = "UPDATE public.users SET (gender,interested_in,birthdate,location,picture_url,provided_location) = ('{}','{}','{}','{}','{}','{}') WHERE ID = {}"\
+            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], filename, form.data['zipcode'], current_user.id)
             connection.execute(sql)
             flash('Successfully Updated', 'Success')
             return redirect(url_for('view.profile'))
