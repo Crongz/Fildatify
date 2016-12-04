@@ -95,10 +95,21 @@ def movieDetail(movie_id):
         flash('Failed to get movie', 'Error')
     return render_template('movieDetail.html', movie=movie, movie_id=movie_id)
 
-@view.route('/personDetail', methods=['GET'])
+@view.route('/personDetail/<person_id>', methods=['GET', 'POST'])
 @login_required
-def personDetail():
-    return render_template('personDetail.html')
+def personDetail(person_id):
+    if request.method == 'POST':
+        try:
+            sql = "INSERT INTO user_person_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
+            connection.execute(text(sql), user_id=current_user.id, person_id=person_id, personal_rating= request.form['rating'], comment=request.form['comment'])
+        except:
+            flash('Failed to upload rating', 'Error')
+    try:
+        sql = "SELECT name, bio, birthdate, photo_url FROM people WHERE id=:id LIMIT 1"
+        person = connection.execute(text(sql), id=person_id).fetchone()
+    except:
+        flash('Failed to find person', 'Error')
+    return render_template('personDetail.html', person=person, person_id=person_id)
 
 """
 Login
