@@ -59,7 +59,6 @@ Dashboard
 @view.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-
     if request.method == 'POST':
         sql = "SELECT * FROM public.movies AS movies WHERE movies.title=:title OR movies.id IN (SELECT movie_people.movie_id FROM movie_people INNER JOIN people ON movie_people.movie_id=people.id AND people.name=:person)"
         result = connection.execute(text(sql), title=request.form['title'], person=request.form['person']).fetchall()
@@ -80,13 +79,21 @@ def matches():
 def matchDetail():
     return render_template('matchDetail.html')
 
-@view.route('/movieDetail/<movie_id>', methods=['GET'])
+@view.route('/movieDetail/<movie_id>', methods=['GET','POST'])
 @login_required
 def movieDetail(movie_id):
-    sql = "SELECT title,duration,year,plot,mpaa_rating FROM movies WHERE id=:movie_id"
-    result = connection.execute(text(sql), movie_id=request.form['movie_id'])
-    print(movie_id)
-    return render_template('movieDetail.html')
+    if request.method == 'POST':
+        try:
+            sql = "INSERT INTO user_movie_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
+            connection.execute(text(sql), user_id=current_user.id, movie_id=movie_id, personal_rating= request.form['rating'], comment=request.form['comment'])
+        except:
+            flash('Failed to upload rating', 'Error')
+    try:
+        sql = "SELECT title, duration, year, plot, mpaa_rating FROM movies WHERE id=:id LIMIT 1"
+        movie = connection.execute(text(sql), id=movie_id).fetchone()
+    except:
+        flash('Failed to get movie', 'Error')
+    return render_template('movieDetail.html', movie=movie, movie_id=movie_id)
 
 @view.route('/personDetail', methods=['GET'])
 @login_required
