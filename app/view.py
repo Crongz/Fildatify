@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash, request, redirect, url_for
+from flask import Blueprint, render_template, abort, flash, request, redirect, url_for, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
 from jinja2 import TemplateNotFound
@@ -8,7 +8,7 @@ from app.forms import *
 from sqlalchemy.sql import text
 import os
 import hashlib
-
+import requests
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
 
 
@@ -150,7 +150,6 @@ def movieDetail(movie_id):
         WHERE user_id = :id AND movie_id = :movie_id
         '''
         exist = connection.execute(text(sql), id=current_user.id ,movie_id=movie_id).fetchone()
-
     except:
         flash('Failed to get movie', 'Error')
     return render_template('movieDetail.html', movie=movie, movie_id=movie_id, actors=actors, count = exist.count)
@@ -164,13 +163,17 @@ def personDetail(person_id):
             sql = "INSERT INTO user_person_opinions (user_id, person_id, personal_rating, comments) VALUES (:user_id, :person_id, :personal_rating, :comments)"
             connection.execute(text(sql), user_id=current_user.id, person_id=person_id,personal_rating=str(2*int(request.form['rating'])), comments=request.form['comments'])
         except:
-        flash('Failed to upload rating', 'Error')
+            flash('Failed to upload rating', 'Error')
         return redirect(url_for('view.personDetail', person_id=person_id))
     try:
         sql = "SELECT name, bio, birthdate, photo_url FROM people WHERE id=:id"
         person = connection.execute(text(sql), id=person_id).fetchone()
     except:
         flash('Failed to find person', 'Error')
+    response = requests.get('https://api.themoviedb.org/3/search/person?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+person.name).json()
+    TMDBid = response['results'][0]['id']
+    person = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
+    print ('TMDBid',person)
     return render_template('personDetail.html', person=person, person_id=person_id)
 
 """

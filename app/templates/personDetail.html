@@ -20,7 +20,7 @@
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-		  <h1>{{ person.name }}<small>Subtext for header</small></h1>
+		  <h1>{{ person.name }}  <small>{{person.also_known_as[0]}}</small></h1>
 		  	<!-- Button trigger modal -->
 		</div>
 	</div>
@@ -61,13 +61,15 @@
 			    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Rate this actor or director
 			</button>
 		</div>
-		<div class="col-sm-5" id="col1">
-			<img class="img-responsive thumbnail" src="http://placehold.it/350x500"/>
+		<div class="col-sm-5">
+			<img class="img-responsive center-block thumbnail" src={{"http://image.tmdb.org/t/p/w342"+person.profile_path}}>
 		</div>
 
-		<div class="col-sm-6 col-sm-offset-1" id="col2">
-			<p> Birthday: {{person.birthdate}} </p>
-			<p> Bio: {{person.bio}} </p>
+		<div class="col-sm-7">
+			<p> Birthday: {{person.birthday}} </p>
+			<p> Place of Birth: {{person.place_of_birth}} </p>
+			<p> Gender: {{person.gender}}</p>
+			<p> Bio: {{person.biography}} </p>
 			</div>
 		</div>
 	</div>
