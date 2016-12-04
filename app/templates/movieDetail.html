@@ -37,7 +37,7 @@
 	        <div class="col-md-12">
 						<form action="/movieDetail/{{movie_id}}" method="POST">
 							<input id="ratings-hidden" name="rating" type="hidden"> 
-							<textarea class="form-control animated" cols="50" id="new-review" name="comment" placeholder="Enter your review here..." rows="5"></textarea>
+							<textarea class="form-control animated" cols="50" id="new-review" name="comments" placeholder="Enter your review here..." rows="5"></textarea>
 
 							<div class="text-right">
 						    <div class="stars starrr" data-rating="0"></div>
@@ -54,11 +54,13 @@
 	</div>
 
 	<div class="modal-body row">
-		 <div class="pull-right">
+		{% if count <= 0 %}
+		<div class="pull-right">
 			<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
 			    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Rate this movie
 			</button>
 		</div>
+		{% endif %}
 		<div class="col-sm-4" id="col1">
 			<img class="img-responsive thumbnail" src="http://placehold.it/350x500"/>
 		</div>

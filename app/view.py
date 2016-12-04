@@ -120,8 +120,8 @@ def matchDetail():
 @login_required
 def movieDetail(movie_id):
     if request.method == 'POST':
-        sql = "INSERT INTO public.user_movie_opinions (user_id, movie_id, personal_rating, comments) VALUES (1, 1, 1, :comments)"
-        connection.execute(text(sql), user_id=current_user.id, movie_id=movie_id, personal_rating= request.form['rating'], comments=request.form['comments'])
+        sql = "INSERT INTO public.user_movie_opinions (user_id, movie_id, personal_rating, comments) VALUES (:user_id, :movie_id, :personal_rating, :comments)"
+        connection.execute(text(sql), user_id=str(current_user.id), movie_id=movie_id, personal_rating=str(2*int(request.form['rating'])), comments=request.form['comments'])
         return redirect(url_for('view.movieDetail', movie_id=movie_id))
     try:
         sql = '''
@@ -144,10 +144,16 @@ def movieDetail(movie_id):
             ORDER BY people.name
         '''
         actors = connection.execute(text(sql), id=movie_id).fetchall()
-        print (actors)
+        sql ='''
+        SELECT COUNT(*)
+        FROM user_movie_opinions
+        WHERE user_id = :id AND movie_id = :movie_id
+        '''
+        exist = connection.execute(text(sql), id=current_user.id ,movie_id=movie_id).fetchone()
+
     except:
         flash('Failed to get movie', 'Error')
-    return render_template('movieDetail.html', movie=movie, movie_id=movie_id, actors=actors)
+    return render_template('movieDetail.html', movie=movie, movie_id=movie_id, actors=actors, count = exist.count)
 
 
 @view.route('/personDetail/<person_id>', methods=['GET', 'POST'])
@@ -155,10 +161,11 @@ def movieDetail(movie_id):
 def personDetail(person_id):
     if request.method == 'POST':
         try:
-            sql = "INSERT INTO user_person_opinions (user_id, movie_id, personal_rating, comments) VALUES (:user_id, :movie_id, :personal_rating, :comments)"
-            connection.execute(text(sql), user_id=current_user.id, person_id=person_id, personal_rating= request.form['rating'], comments=request.form['comments'])
+            sql = "INSERT INTO user_person_opinions (user_id, person_id, personal_rating, comments) VALUES (:user_id, :person_id, :personal_rating, :comments)"
+            connection.execute(text(sql), user_id=current_user.id, person_id=person_id,personal_rating=str(2*int(request.form['rating'])), comments=request.form['comments'])
         except:
-            flash('Failed to upload rating', 'Error')
+        flash('Failed to upload rating', 'Error')
+        return redirect(url_for('view.personDetail', person_id=person_id))
     try:
         sql = "SELECT name, bio, birthdate, photo_url FROM people WHERE id=:id"
         person = connection.execute(text(sql), id=person_id).fetchone()
