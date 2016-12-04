@@ -88,6 +88,11 @@ def movieDetail(movie_id):
     print(movie_id)
     return render_template('movieDetail.html')
 
+@view.route('/personDetail', methods=['GET'])
+@login_required
+def personDetail():
+    return render_template('personDetail.html')
+
 """
 Login
 - Users can login with their email and password
