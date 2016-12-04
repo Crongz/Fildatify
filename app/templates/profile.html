@@ -3,7 +3,7 @@
 
 {% block body %}
 <div class="container">
-  <form class="form-horizontal" role="form" action="/profile" method="POST">
+  <form class="form-horizontal" role="form" action="/profile" enctype='multipart/form-data' method="POST">
     <h2>Profile</h2>
     {{ form.hidden_tag() }}
     {% for field in form.errors %}

@@ -59,99 +59,13 @@ Dashboard
 @view.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    genre_options = [
-        'Experimental',
-        'Western',
-        'Animation',
-        'War',
-        'History',
-        'Musical',
-        'Reality-TV',
-        'Documentary',
-        'Sci-Fi',
-        'Short',
-        'Thriller',
-        'Film-Noir',
-        'Biography',
-        'Horror',
-        'Action',
-        'Comedy',
-        'Commercial',
-        'Family',
-        'Adventure',
-        'Talk-Show',
-        'Lifestyle',
-        'Romance',
-        'Drama',
-        'Fantasy',
-        'Sport',
-        'Mystery',
-        'Crime',
-        'Music'
-    ]
-
-    # ACTOR ROLE TYPE = (1,2) (actor,actress)
-    # DIRECTOR=8
-
-    # "WHERE title.kind_id=1 AND LOWER(name.name) LIKE \'%%%s%%\'"
 
     if request.method == 'POST':
-        search_title = request.form['movie']
-        search_genre = request.form['genrebox']
-        search_actor = request.form["actor"]
+        sql = "SELECT * FROM public.movies AS movies WHERE movies.title=:title OR movies.id IN (SELECT movie_people.movie_id FROM movie_people INNER JOIN people ON movie_people.movie_id=people.id AND people.name=:person)"
+        result = connection.execute(text(sql), title=request.form['title'], person=request.form['person']).fetchall()
+        print result
 
-        if search_title.strip() == "":
-            search_title = None
-
-        if search_actor.strip() == "":
-            search_actor = None
-
-        if search_genre.strip() == "":
-            search_genre = None
-
-        where = []
-        params = {}
-
-        if search_genre is not None:
-            where.append("movie_info.info=:genre")
-            params['genre'] = search_genre
-
-        if search_actor is not None:
-            where.append("LOWER(name.name) LIKE :actor_name")
-            params['actor_name'] = '%' + search_actor.lower() + '%'
-
-        if search_title is not None:
-            where.append("LOWER(title.title) LIKE :movie_title")
-            params['movie_title'] = '%' + search_title.lower() + '%'
-
-        query = ''' SELECT DISTINCT ON (title.id) title.title, title.production_year FROM title
-        LEFT JOIN cast_info ON cast_info.movie_id=title.id
-        LEFT JOIN name ON cast_info.person_id=name.id
-        LEFT JOIN movie_info ON movie_info.id=title.id
-        WHERE 1=1
-        '''
-
-        if len(where) < 1:
-            flash('Must provide at least one search term.', 'error')
-            return render_template('dashboard.html', genre_options=sorted(genre_options))
-
-        query += " AND "
-        for i, clause in enumerate(where):
-            query += clause + " "
-            if i != len(where) - 1:
-                query += " AND "
-
-        query += " LIMIT 20"
-        result = connection.execute(text(query), **params).fetchall()
-        print (result)
-        return render_template('dashboard.html', genre_options=sorted(genre_options),
-                               last_title=search_title,
-                               last_actor=search_actor,
-                               last_genre=search_genre,
-                               result=result
-       )
-
-    return render_template('dashboard.html', genre_options=sorted(genre_options))
+    return render_template('dashboard.html')
 
 """
 Matches

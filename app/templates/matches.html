@@ -2,76 +2,66 @@
 {% block title %} FilmDatify {% endblock %}
 
 {% block body %}
+<style type="text/css">
+	.list-group-horizontal .list-group-item {
+	    display: inline-block;
+	}
+	.list-group-item {
+		border: none;
+	}
+</style>
 
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-		  <h1>Example page header <small>Subtext for header</small></h1>
+		  <h1>Matches <small>Subtext for header</small></h1>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12" id="match-container">
-			<div class="col-sm-2 text-center">
-				<a>
-					<img class="img-responsive" src="http://placehold.it/150x150"/>
-					<h5>Name</h5>
-					<p>Age</p>
-					<p>Location</p>
-				</a>
-			</div>
-			<div class="col-sm-2 text-center">
-				<a>
-					<img class="img-responsive" src="http://placehold.it/150x150"/>
-					<h5>Name</h5>
-					<p>Age</p>
-					<p>Location</p>
-				</a>
-			</div>
-			<div class="col-sm-2 text-center">
-				<a>
-					<img class="img-responsive" src="http://placehold.it/150x150"/>
-					<h5>Name</h5>
-					<p>Age</p>
-					<p>Location</p>
-				</a>
-			</div>
-			<div class="col-sm-2 text-center">
-				<a>
-					<img class="img-responsive" src="http://placehold.it/150x150"/>
-					<h5>Name</h5>
-					<p>Age</p>
-					<p>Location</p>
-				</a>
-			</div>
-			<div class="col-sm-2 text-center">
-				<a>
-					<img class="img-responsive" src="http://placehold.it/150x150"/>
-					<h5>Name</h5>
-					<p>Age</p>
-					<p>Location</p>
-				</a>
-			</div>
-			<div class="col-sm-2 text-center">
-				<a>
-					<img class="img-responsive" src="http://placehold.it/150x150"/>
-					<h5>Name</h5>
-					<p>Age</p>
-					<p>Location</p>
-				</a>
-			</div>
+		<div class="list-group list-group-horizontal">
+			<a href="#" class="list-group-item">
+				<div class="row">
+					<div class="col-sm-12">
+						<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+						<p class="text-center">Name</p>
+						<p class="text-center">Age</p>
+						<p class="text-center">Location</p>
+					</div>
+				</div>
+			</a>
+			<a href="#" class="list-group-item">
+				<div class="row">
+					<div class="col-sm-12">
+						<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+						<p class="text-center">Name</p>
+						<p class="text-center">Age</p>
+						<p class="text-center">Location</p>
+					</div>
+				</div>
+			</a>
+			<a href="#" class="list-group-item">
+				<div class="row">
+					<div class="col-sm-12">
+						<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+						<p class="text-center">Name</p>
+						<p class="text-center">Age</p>
+						<p class="text-center">Location</p>
+					</div>
+				</div>
+			</a>
 		</div>
 	</div>
-
+	<hr>
 	<div class="row">
 		<div class="container" id="matchBox">
-			<div class="col-md-3">
-				<h3>Your Matches</h3>
+			<div class="col-sm-3">
+				<h3>New Match</h3>
 				<div>
 					<img class="img-responsive thumbnail" src="{{ url_for('static', filename='images/RandomMan1.jpg') }}" id="matchImg">
 					<h3> Blake Peckham </h3>
 					<h4> Age: 22 </h4>
 					<h4> Location: Chicago </h4>
-					<div class="btn-group btn-group-justified" role="group" aria-label="...">
+					<div class="btn-group btn-group-justified" role="group">
 					  <div class="btn-group" role="group">
 					    <button type="button" class="btn btn-success">Yes</button>
 					  </div>
@@ -82,128 +72,70 @@
 				</div>
 			</div>
 
-			<div class="col-md-3">
-				<h3>Movies</h3>
-				<div class="list-group">
-				  <a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
-							</div>
-							<div class="col-xs-6">
-								<p>Title</p>
-								<p>Year</p>
-								<p>Genre</p>
-								<p>Director</p>
-							</div>
-						</div>
-					</a>
 
-					<a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
+			<div class="col-sm-9">
+				<div class="row">
+					<h3>Movies</h3>
+					<div class="list-group list-group-horizontal">
+						<a href="#" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-12">
+									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+									<p class="text-center">Title</p>
+								</div>
 							</div>
-							<div class="col-xs-6">
-								<p>Title</p>
-								<p>Year</p>
-								<p>Genre</p>
-								<p>Director</p>
-							</div>
-						</div>
-					</a>
+						</a>
 
-					<a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
+						<a href="#" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-12">
+									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+									<p class="text-center">Title</p>
+								</div>
 							</div>
-							<div class="col-xs-6">
-								<p>Title</p>
-								<p>Year</p>
-								<p>Genre</p>
-								<p>Director</p>
-							</div>
-						</div>
-					</a>
-				</div>
-			</div>
+						</a>
 
-			<div class="col-md-3">
-				<h3>Actors/Actresses</h3>
-				<div class="list-group">
-				  <a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
+						<a href="#" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-12">
+									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+									<p class="text-center">Title</p>
+								</div>
 							</div>
-							<div class="col-xs-6">
-								<p>Name</p>
-								<p>Age</p>
-							</div>
-						</div>
-					</a>
-					<a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
-							</div>
-							<div class="col-xs-6">
-								<p>Name</p>
-								<p>Age</p>
-							</div>
-						</div>
-					</a>
-					<a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
-							</div>
-							<div class="col-xs-6">
-								<p>Name</p>
-								<p>Age</p>
-							</div>
-						</div>
-					</a>
+						</a>
+					</div>
 				</div>
-			</div>
-			<div class="col-md-3">
-				<h3>Directors</h3>
-				<div class="list-group">
-				  <a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
+
+				<div class="row">
+					<h3>Actors/Actresses/Directors</h3>
+					<div class="list-group list-group-horizontal">
+					  <a href="#" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-12">
+									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+									<p class="text-center">Name</p>
+								</div>
 							</div>
-							<div class="col-xs-6">
-								<p>Name</p>
-								<p>Age</p>
+						</a>
+						<a href="#" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-12">
+									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+									<p class="text-center">Name</p>
+								</div>
 							</div>
-						</div>
-					</a>
-					<a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
+						</a>
+						<a href="#" class="list-group-item">
+							<div class="row">
+								<div class="col-sm-12">
+									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
+									<p class="text-center">Name</p>
+								</div>
 							</div>
-							<div class="col-xs-6">
-								<p>Name</p>
-								<p>Age</p>
-							</div>
-						</div>
-					</a>
-					<a href="#" class="list-group-item">
-						<div class="row">
-							<div class="col-xs-6">
-								<img class="img-responsive thumbnail" src="http://placehold.it/150x200"/>
-							</div>
-							<div class="col-xs-6">
-								<p>Name</p>
-								<p>Age</p>
-							</div>
-						</div>
-					</a>
+						</a>
+					</div>
 				</div>
+
 			</div>
 		</div>
 	</div>

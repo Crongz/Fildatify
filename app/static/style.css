@@ -49,12 +49,3 @@
         border-top:0 none;
     }
 }
-
-#match-container {
-  padding-top:10px;
-  background: rgba(0,0,0,0.1);
-}
-
-#matchBox{
-  padding: 50px;
-}
