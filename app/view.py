@@ -11,6 +11,7 @@ import hashlib
 
 view = Blueprint('view', __name__, template_folder='templates', static_folder='static')
 
+
 connection = db.engine.connect()
 
 """
@@ -59,13 +60,23 @@ Dashboard
 @view.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+    result = None
     if request.method == 'POST':
         try:
-            sql = "SELECT * FROM public.movies AS movies WHERE movies.title=:title OR movies.id IN (SELECT movie_people.movie_id FROM movie_people INNER JOIN people ON movie_people.movie_id=people.id AND people.name=:person)"
-            result = connection.execute(text(sql), title=request.form['title'], person=request.form['person']).fetchall()
+            title = request.form['title']
+            person = request.form['person']
+            if title == '' and person == '':
+                return render_template('dashboard.html', result=result)
+            elif title != '' and person == '':
+                sql = "SELECT movies.id, title, duration, year, mpaa_rating FROM movies WHERE movies.title LIKE :title"
+            elif title == '' and person != '':
+                sql="SELECT movies.id, title, duration, year, mpaa_rating FROM movies INNER JOIN movie_people ON movies.id = movie_id INNER JOIN people ON person_id = people.id AND people.name LIKE :person"
+            else:
+                sql="SELECT movies.id, title, duration, year, mpaa_rating FROM movies INNER JOIN movie_people ON movies.id = movie_id INNER JOIN people ON person_id = people.id AND people.name LIKE :person WHERE movies.title LIKE :title"
+            result = connection.execute(text(sql), title="%"+title+"%", person="%"+person+"%").fetchall()
         except:
             flash('Failed to get movies', 'Error')
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', result=result)
 
 """
 Matches
@@ -75,7 +86,7 @@ Matches
 def matches():
     if request.method == 'POST':
         try:
-            sql = "INSERT INTO user_movie_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
+            sql = "INSERT INTO public.user_movie_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
             connection.execute(text(sql), user_id=current_user.id, movie_id=movie_id, personal_rating= request.form['rating'], comment=request.form['comment'])
         except:
             flash('Failed to upload rating', 'Error')
@@ -109,17 +120,34 @@ def matchDetail():
 @login_required
 def movieDetail(movie_id):
     if request.method == 'POST':
-        try:
-            sql = "INSERT INTO user_movie_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
-            connection.execute(text(sql), user_id=current_user.id, movie_id=movie_id, personal_rating= request.form['rating'], comment=request.form['comment'])
-        except:
-            flash('Failed to upload rating', 'Error')
+        sql = "INSERT INTO public.user_movie_opinions (user_id, movie_id, personal_rating, comments) VALUES (1, 1, 1, :comments)"
+        connection.execute(text(sql), user_id=current_user.id, movie_id=movie_id, personal_rating= request.form['rating'], comments=request.form['comments'])
+        return redirect(url_for('view.movieDetail', movie_id=movie_id))
     try:
-        sql = "SELECT title, duration, year, plot, mpaa_rating FROM movies WHERE id=:id LIMIT 1"
+        sql = '''
+            SELECT title, duration, year, plot, mpaa_rating, 
+            (SELECT string_agg(people.name, ', ') FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id WHERE movie_people.person_role='Director' AND movie_people.movie_id=movies.id) 
+            AS directors,
+            (SELECT string_agg(people.name, '\n' ORDER BY people.name) FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id WHERE movie_people.person_role='Actor' AND movie_people.movie_id=movies.id)  AS actors,
+            string_agg(genre, ', ') AS genres FROM movies 
+            LEFT JOIN movie_genre ON movie_genre.movie_id=movies.id 
+            LEFT JOIN genres ON movie_genre.genre_id=genres.id
+
+            WHERE movies.id=:id 
+            GROUP BY movies.id, title, duration, year, plot, mpaa_rating
+        '''
         movie = connection.execute(text(sql), id=movie_id).fetchone()
+        sql ='''
+            SELECT people.id, people.name
+            FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id 
+            WHERE movie_people.person_role='Actor' AND movie_people.movie_id=:id
+            ORDER BY people.name
+        '''
+        actors = connection.execute(text(sql), id=movie_id).fetchall()
+        print (actors)
     except:
         flash('Failed to get movie', 'Error')
-    return render_template('movieDetail.html', movie=movie, movie_id=movie_id)
+    return render_template('movieDetail.html', movie=movie, movie_id=movie_id, actors=actors)
 
 
 @view.route('/personDetail/<person_id>', methods=['GET', 'POST'])
@@ -127,12 +155,12 @@ def movieDetail(movie_id):
 def personDetail(person_id):
     if request.method == 'POST':
         try:
-            sql = "INSERT INTO user_person_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
-            connection.execute(text(sql), user_id=current_user.id, person_id=person_id, personal_rating= request.form['rating'], comment=request.form['comment'])
+            sql = "INSERT INTO user_person_opinions (user_id, movie_id, personal_rating, comments) VALUES (:user_id, :movie_id, :personal_rating, :comments)"
+            connection.execute(text(sql), user_id=current_user.id, person_id=person_id, personal_rating= request.form['rating'], comments=request.form['comments'])
         except:
             flash('Failed to upload rating', 'Error')
     try:
-        sql = "SELECT name, bio, birthdate, photo_url FROM people WHERE id=:id LIMIT 1"
+        sql = "SELECT name, bio, birthdate, photo_url FROM people WHERE id=:id"
         person = connection.execute(text(sql), id=person_id).fetchone()
     except:
         flash('Failed to find person', 'Error')
@@ -196,12 +224,9 @@ def register():
             if file and allowed_file(file.filename):
                 hashKey = hashlib.md5(file.read()).hexdigest() 
                 filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
-                file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
-            sql = "INSERT INTO public.users (email,password,gender,interested_in,birthdate,name,location,picture_url,provided_location) VALUES ('{}','{}','{}','{}','{}','{}','{}','{}','{}')"\
-            .format(form.data['email'], form.data['password'], form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['name'], form.data['location'],filename, form.data['zipcode'])
-            connection.execute(sql)
-            # sql = "SELECT * FROM public.users (email, password, gender, interested_in, birthdate, name, location) VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, :location)"
-            # connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], location=form.data['location'])
+                request.files['file'].save(os.path.join(APP_ROOT+'/UploadImage', filename))
+            sql = "INSERT INTO public.users (email, password, gender, interested_in, birthdate, name, location, picture_url, provided_location) VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, :location, :filename, :provided_location)"
+            connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], location=form.data['location'], filename=filename, provided_location = form.data['provided_location'])
             flash('Successfully Registered', 'Success')
             return redirect(url_for('view.home'))
         except:
@@ -226,7 +251,8 @@ def profile():
             if file and allowed_file(file.filename):
                 hashKey = hashlib.md5(file.read()).hexdigest() 
                 filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
-                file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
+                request.files['file'].save(os.path.join(APP_ROOT+'/UploadImage', filename))
+                # file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
             sql = "UPDATE public.users SET (gender,interested_in,birthdate,location,picture_url,provided_location) = ('{}','{}','{}','{}','{}','{}') WHERE ID = {}"\
             .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], filename, form.data['provided_location'], current_user.id)
             connection.execute(sql)

@@ -20,7 +20,7 @@
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-		  <h1>[Name]<small>Subtext for header</small></h1>
+		  <h1>{{ person.name }}<small>Subtext for header</small></h1>
 		  	<!-- Button trigger modal -->
 		</div>
 	</div>
@@ -36,7 +36,7 @@
 	      </div>
 	      <div class="modal-body">
 	        <div class="col-md-12">
-						<form accept-charset="UTF-8" action="/personDetail/{{person_id}}" method="POST">
+						<form accept-charset="UTF-8" action="/personDetail/{{person.id}}" method="POST">
 							<input id="ratings-hidden" name="rating" type="hidden"> 
 							<textarea class="form-control animated" cols="50" id="new-review" name="comment" placeholder="Enter your review here..." rows="5"></textarea>
 
@@ -57,7 +57,7 @@
 	<div class="modal-body row">
 		 <div class="pull-right">
 			<button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
-			    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Rate this actors or directors
+			    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Rate this actor or director
 			</button>
 		</div>
 		<div class="col-sm-3 col-sm-offset-2" id="col1">
@@ -65,10 +65,9 @@
 		</div>
 
 		<div class="col-sm-4 col-sm-offset-1" id="col2">
-			<p> Birthday: [Birthday] </p>
-			<p> Age: [Age] </p>
+			<p> Birthday: {{person.birthdate}} </p>
 			<br><br>
-			<p> [Bio] </p>
+			<p> Bio: {{person.bio}} </p>
 			</div>
 		</div>
 	</div>

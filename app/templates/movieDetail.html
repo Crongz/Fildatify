@@ -19,7 +19,7 @@
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-		  <h1>[Name]<small>Subtext for header</small></h1>
+		  <h1>{{movie.title}} <small>{{movie.year}}</small></h1>
 		  	<!-- Button trigger modal -->
 		</div>
 	</div>
@@ -35,7 +35,7 @@
 	      </div>
 	      <div class="modal-body">
 	        <div class="col-md-12">
-						<form accept-charset="UTF-8" action="/movieDetail/{{movie_id}}" method="POST">
+						<form action="/movieDetail/{{movie_id}}" method="POST">
 							<input id="ratings-hidden" name="rating" type="hidden"> 
 							<textarea class="form-control animated" cols="50" id="new-review" name="comment" placeholder="Enter your review here..." rows="5"></textarea>
 
@@ -59,20 +59,24 @@
 			    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Rate this movie
 			</button>
 		</div>
-		<div class="col-sm-3 col-sm-offset-2" id="col1">
+		<div class="col-sm-4" id="col1">
 			<img class="img-responsive thumbnail" src="http://placehold.it/350x500"/>
 		</div>
 
-		<div class="col-sm-4 col-sm-offset-1" id="col2">
-			<p> [Year] </p>
-			<p> [Rating] </p>
-			<p> [Duration] </p>
-			<p> [Genres] </p>
+		<div class="col-sm-7 col-sm-offset-1" id="col2">
+			<p> Year: {{movie.year}} </p>
+			<p> Rating: {{movie.rating}} </p>
+			<p> Duration: {{movie.duration}} </p>
+			<p> Genre(s): {{movie.genres}} </p>
 			<br>
-			<p> Director: [Director] </p>
-			<p> Stars: [Stars] </p>
+			<p> Directed by: {{movie.directors}} </p>
 			<br><br>
-			<p> [Plot Summary] </p>
+			<p> Plot: {{movie.plot}} </p>
+		  <p>Cast:</p>
+		  	{% for actor in actors%}
+			  	<a href="/personDetail/{{actor.id}}">{{actor.name}}</a>
+			  	{% if not loop.last %} |  {%endif%}
+		  	{% endfor %}
 			</div>
 	</div>
 </div>

@@ -24,7 +24,6 @@ class RegisterForm(FlaskForm):
 
 class ProfileForm(FlaskForm):
     name = TextField()
-    password = PasswordField()
     email = TextField()
     gender = SelectField( choices=[('0', 'Female'), ('1', 'Male'), ('2', 'Other')])
     interested_in = SelectField( choices=[('0', 'Female'), ('1', 'Male'), ('2', 'Other')])
