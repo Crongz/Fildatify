@@ -166,9 +166,10 @@ def matches():
 def matchDetail():
     return render_template('matchDetail.html')
 
-@view.route('/movieDetail', methods=['GET'])
+@view.route('/movieDetail/<movie_id>', methods=['GET'])
 @login_required
-def movieDetail():
+def movieDetail(movie_id):
+    print(movie_id)
     return render_template('movieDetail.html')
 
 """
