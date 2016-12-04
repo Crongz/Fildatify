@@ -20,8 +20,10 @@
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-		  <h1>{{ person.name }}  <small>{{person.also_known_as[0]}}</small></h1>
-		  	<!-- Button trigger modal -->
+		  <h1>{{ person.name }}  <small>
+		  {% if person.also_known_as%}
+		  {{person.also_known_as[0]}}</small></h1>
+		  {% endif %}
 		</div>
 	</div>
 
@@ -36,7 +38,6 @@
 	      </div>
 	      <div class="modal-body">
 	        <div class="col-md-12">
-	        {{person_id}}
 						<form action="/personDetail/{{person_id}}" method="POST">
 							<input id="ratings-hidden" name="rating" type="hidden"> 
 							<textarea class="form-control animated" cols="50" id="new-review" name="comments" placeholder="Enter your review here..." rows="5"></textarea>
@@ -62,7 +63,11 @@
 			</button>
 		</div>
 		<div class="col-sm-5">
+		  {% if person.profile_path %}
 			<img class="img-responsive center-block thumbnail" src={{"http://image.tmdb.org/t/p/w342"+person.profile_path}}>
+			{% else %}
+			<img class="img-responsive thumbnail center-block" src="http://placehold.it/300x500"/>
+			{% endif %}
 		</div>
 
 		<div class="col-sm-7">

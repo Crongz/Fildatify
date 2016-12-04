@@ -152,7 +152,13 @@ def movieDetail(movie_id):
         exist = connection.execute(text(sql), id=current_user.id ,movie_id=movie_id).fetchone()
     except:
         flash('Failed to get movie', 'Error')
-    return render_template('movieDetail.html', movie=movie, movie_id=movie_id, actors=actors, count = exist.count)
+    response = requests.get('https://api.themoviedb.org/3/search/movie?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+movie.title).json()
+    if response['total_results'] != 0:
+        TMDBid = response['results'][0]['id']
+        movieExtra = requests.get('https://api.themoviedb.org/3/movie/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
+        print (movieExtra)
+
+    return render_template('movieDetail.html', movie=movie, movieExtra=movieExtra, movie_id=movie_id, actors=actors, count = exist.count)
 
 
 @view.route('/personDetail/<person_id>', methods=['GET', 'POST'])
@@ -171,9 +177,9 @@ def personDetail(person_id):
     except:
         flash('Failed to find person', 'Error')
     response = requests.get('https://api.themoviedb.org/3/search/person?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+person.name).json()
-    TMDBid = response['results'][0]['id']
-    person = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
-    print ('TMDBid',person)
+    if response['total_results'] != 0:
+        TMDBid = response['results'][0]['id']
+        person = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
     return render_template('personDetail.html', person=person, person_id=person_id)
 
 """
