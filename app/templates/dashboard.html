@@ -22,15 +22,15 @@
 			<h3>Search for...</h3>
         <form action="" method="post" class="form">
 					<div class="input-group">
-			      <span><input name="title" type="text" class="form-control" placeholder="Movie" style="width: 22%; margin:10px"></span>
-						<span><input name="person" type="text" class="form-control" placeholder="with Actor or Director" style="width: 22%; margin:10px"></span>
+			      <span><input name="title" type="text" class="form-control" placeholder="Movie" style="width: 28%; margin:10px"></span>
+						<span><input name="person" type="text" class="form-control" placeholder="with Actor or Director" style="width: 28%; margin:10px"></span>
 	          <span class="input-group-btn">
 	          	<button class="btn btn-default" type="submit">Search</button>
 	          </span>
 	        </div>
-        </form>
-        <h3>Results</h3>
+        </form>        
         {% if result %}
+        <h3>Results</h3>
           <ul class="list-group">
 						{% for data in result %}
 						<a href="{{data.id}}" class="list-group-item">
