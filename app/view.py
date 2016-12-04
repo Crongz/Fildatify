@@ -98,7 +98,7 @@ def matches():
             Matches.append(user)
     except:
         flash('Failed to get matches', 'Error')      
-    return render_template('matches.html', newMatch=newMatch, Matches=Matches)
+    return render_template('matches.html', newMatch=newMatch, Matches=Matches, matchesID=matchesID)
 
 @view.route('/matchDetail', methods=['GET'])
 @login_required
@@ -120,6 +120,7 @@ def movieDetail(movie_id):
     except:
         flash('Failed to get movie', 'Error')
     return render_template('movieDetail.html', movie=movie, movie_id=movie_id)
+
 
 @view.route('/personDetail/<person_id>', methods=['GET', 'POST'])
 @login_required
@@ -221,13 +222,13 @@ def profile():
     if request.method == 'POST' and form.validate():
         try:
             file = request.files['file']
-            filename = ''
+            filename = current_user.picture_url
             if file and allowed_file(file.filename):
                 hashKey = hashlib.md5(file.read()).hexdigest() 
                 filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
                 file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
             sql = "UPDATE public.users SET (gender,interested_in,birthdate,location,picture_url,provided_location) = ('{}','{}','{}','{}','{}','{}') WHERE ID = {}"\
-            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], filename, form.data['zipcode'], current_user.id)
+            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], filename, form.data['provided_location'], current_user.id)
             connection.execute(sql)
             flash('Successfully Updated', 'Success')
             return redirect(url_for('view.profile'))

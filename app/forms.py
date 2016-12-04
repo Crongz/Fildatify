@@ -13,7 +13,7 @@ class RegisterForm(FlaskForm):
     interested_in = SelectField( choices=[('0', 'Female'), ('1', 'Male'), ('2', 'Other')])
     birthdate = DateField(format='%Y-%m-%d')
     location = SelectField( choices=[('(41.8781,87.6298)', 'Chicago'), ('(40.1164,88.2434)', 'Champaign'), ('(39.7817,89.6501)', 'Springfield')])
-    zipcode = TextField(validators=[InputRequired()])
+    provided_location = TextField(validators=[InputRequired()])
     file = FileField()
 
     def validate_email(self, field):
@@ -30,5 +30,5 @@ class ProfileForm(FlaskForm):
     interested_in = SelectField( choices=[('0', 'Female'), ('1', 'Male'), ('2', 'Other')])
     birthdate = DateField(format='%Y-%m-%d')
     location = SelectField( choices=[('(41.8781,87.6298)', 'Chicago'), ('(40.1164,88.2434)', 'Champaign'), ('(39.7817,89.6501)', 'Springfield')])
-    zipcode = TextField(validators=[InputRequired()])
+    provided_location = TextField(validators=[InputRequired()])
     file = FileField()
