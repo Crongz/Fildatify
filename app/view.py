@@ -60,10 +60,11 @@ Dashboard
 @login_required
 def dashboard():
     if request.method == 'POST':
-        sql = "SELECT * FROM public.movies AS movies WHERE movies.title=:title OR movies.id IN (SELECT movie_people.movie_id FROM movie_people INNER JOIN people ON movie_people.movie_id=people.id AND people.name=:person)"
-        result = connection.execute(text(sql), title=request.form['title'], person=request.form['person']).fetchall()
-        print result
-
+        try:
+            sql = "SELECT * FROM public.movies AS movies WHERE movies.title=:title OR movies.id IN (SELECT movie_people.movie_id FROM movie_people INNER JOIN people ON movie_people.movie_id=people.id AND people.name=:person)"
+            result = connection.execute(text(sql), title=request.form['title'], person=request.form['person']).fetchall()
+        except:
+            flash('Failed to get movies', 'Error')
     return render_template('dashboard.html')
 
 """
@@ -72,7 +73,32 @@ Matches
 @view.route('/matches', methods=['GET'])
 @login_required
 def matches():
-    return render_template('matches.html')
+    if request.method == 'POST':
+        try:
+            sql = "INSERT INTO user_movie_opinions (user_id, movie_id, personal_rating, comment) VALUES (:user_id, :movie_id, :personal_rating, :comment)"
+            connection.execute(text(sql), user_id=current_user.id, movie_id=movie_id, personal_rating= request.form['rating'], comment=request.form['comment'])
+        except:
+            flash('Failed to upload rating', 'Error')
+    newMatch = None
+    Matches = []
+    try:
+        sql = "SELECT user_id FROM matched_user WHERE user_id!=:current_id AND state=null AND match_id IN (SELECT match_id FROM matched_user WHERE user_id=:current_id AND state=null LIMIT 1)"
+        newMatchID = connection.execute(text(sql), current_id=current_user.id).fetchone()
+        if newMatchID != None:
+            sql = "SELECT * FROM users WHERE id = :newMatchID)"
+            newMatch = connection.execute(text(sql), newMatchID=newMatchID).fetchone()
+    except:
+        flash('Failed to get new match', 'Error')
+    try:
+        sql = "SELECT user_id FROM matched_user WHERE user_id!=:current_id AND state=true AND match_id IN (SELECT match_id FROM matched_user WHERE user_id=:current_id AND state=true LIMIT 1)"
+        matchesID = connection.execute(text(sql), current_id=current_user.id).fetchall()
+        for id in matchesID:
+            sql = "SELECT * FROM users WHERE id = :matchID)"
+            user = connection.execute(text(sql), matchID=id).fetchone()
+            Matches.append(user)
+    except:
+        flash('Failed to get matches', 'Error')      
+    return render_template('matches.html', newMatch=newMatch, Matches=Matches)
 
 @view.route('/matchDetail', methods=['GET'])
 @login_required
