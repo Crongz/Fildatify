@@ -95,6 +95,11 @@ def movieDetail(movie_id):
         flash('Failed to get movie', 'Error')
     return render_template('movieDetail.html', movie=movie, movie_id=movie_id)
 
+@view.route('/personDetail', methods=['GET'])
+@login_required
+def personDetail():
+    return render_template('personDetail.html')
+
 """
 Login
 - Users can login with their email and password

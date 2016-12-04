@@ -1,0 +1,42 @@
+{% extends "partials/layout.html" %}
+{% block title %} FilmDatify {% endblock %}
+
+{% block body %}
+<style>
+#match-container a:link, a:visited {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+}
+#col1{
+	padding-top: 10px;
+	padding-left: 275px;
+}
+
+#col2{
+	padding-top: 10px;
+}
+</style>
+
+<div class="container">
+<div class="row">
+	<div class="page-header">
+		<h1>[Person] Details</h1>
+	</div>
+</div>
+</div>
+
+<div class="modal-body row">
+	<div class="col-md-6" id="col1">
+		<img class="img-responsive thumbnail" src="http://placehold.it/350x500"/>
+	</div>
+
+	<div class="col-md-6" id="col2">
+		<p> Birthday: [Birthday] </p>
+		<p> Age: [Age] </p>
+		<br><br>
+		<p> [Bio] </p>
+  	</div>
+</div>
+
+{% endblock %}
