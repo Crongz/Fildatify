@@ -53,7 +53,7 @@
 	</div>
 	<hr>
 	<div class="row">
-		<div class="container" id="matchBox">
+		<div class="container" style="padding-left:50px; padding-right: 50px;">
 			<div class="col-sm-3">
 				<h3>New Match</h3>
 				<div>
@@ -63,10 +63,18 @@
 					<h4> Location: Chicago </h4>
 					<div class="btn-group btn-group-justified" role="group">
 					  <div class="btn-group" role="group">
-					    <button type="button" class="btn btn-success">Yes</button>
+  						<form accept-charset="UTF-8" action="/matches" method="POST">
+								<input name="id" type="hidden" value="{{newMatch.id}}"> 
+								<input name="state" type="hidden" value="yes"> 
+						    <button type="submit" class="btn btn-success">Yes</button>
+					    </form>
 					  </div>
 					  <div class="btn-group" role="group">
-					    <button type="button" class="btn btn-danger">No</button>
+  						<form accept-charset="UTF-8" action="/matches" method="POST">
+								<input name="id" type="hidden" value="{{newMatch.id}}"> 
+								<input name="state" type="hidden" value="no"> 
+						    <button type="button" class="btn btn-danger">No</button>
+ 					    </form>
 					  </div>
 					</div>
 				</div>
