@@ -169,6 +169,8 @@ def matchDetail():
 @view.route('/movieDetail/<movie_id>', methods=['GET'])
 @login_required
 def movieDetail(movie_id):
+    sql = "SELECT title,duration,year,plot,mpaa_rating FROM public.users WHERE movie_id=:movie_id"
+    result = connection.execute(text(sql), movie_id=request.form['movie_id']
     print(movie_id)
     return render_template('movieDetail.html')
 
@@ -191,7 +193,7 @@ def login():
         flash('Successfully Login', 'Success')
         return redirect(url_for('view.dashboard'))
     else:
-        flash('Invalid passowrd or email', 'Error')
+        flash('Invalid password or email', 'Error')
     return redirect(url_for('view.home'))
 
 """
