@@ -61,75 +61,24 @@
 		<div class="col-xs-4 col-xs-offset-1" id="popular">
 			<h3>Recommended Movies</h3>
 			<div class="list-group">
-			  <a href="/movieDetail/123" class="list-group-item">
+				{% for movie in recommendations%}
+			  <a href="/movieDetail/{{movie.DBid}}" class="list-group-item">
 					<div class="row">
 					<div class="col-xs-6">
+						{% if movie.poster_path %}
+						<img class="img-responsive" src="http://image.tmdb.org/t/p/w342{{movie.poster_path}}"/>
+						{% else%}
 						<img class="img-responsive" src="http://placehold.it/150x200"/>
+						{% endif %}
 					</div>
 					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
+						<p>Title: {{movie.title}}</p>
+						<p>Year: {{movie.release_date}}</p>
+						<p>Runtime: {{movie.runtime}}</p>
 					</div>
 					</div>
 				</a>
-
-				<a href="/movieDetail" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="/movieDetail" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="/movieDetail" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
-
-				<a href="/movieDetail" class="list-group-item">
-					<div class="row">
-					<div class="col-xs-6">
-						<img class="img-responsive" src="http://placehold.it/150x200"/>
-					</div>
-					<div class="col-xs-6">
-						<p>Title</p>
-						<p>Year</p>
-						<p>Genre</p>
-						<p>Director</p>
-					</div>
-					</div>
-				</a>
+				{% endfor %}
 
 			</div>
 
