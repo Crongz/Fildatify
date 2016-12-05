@@ -28,6 +28,6 @@ class ProfileForm(FlaskForm):
     gender = SelectField( choices=[('0', 'Female'), ('1', 'Male'), ('2', 'Other')])
     interested_in = SelectField( choices=[('0', 'Female'), ('1', 'Male'), ('2', 'Other')])
     birthdate = DateField(format='%Y-%m-%d')
-    location = SelectField( choices=[('(41.8781,87.6298)', 'Chicago'), ('(40.1164,88.2434)', 'Champaign'), ('(39.7817,89.6501)', 'Springfield')])
+    location = SelectField( choices=[('(41.8781,-87.6298)', 'Chicago'), ('(40.1164,-88.2434)', 'Champaign'), ('(39.7817,-89.6501)', 'Springfield')])
     provided_location = TextField(validators=[InputRequired()])
     file = FileField()
