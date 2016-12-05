@@ -28,16 +28,28 @@
 	          	<button class="btn btn-default" type="submit">Search</button>
 	          </span>
 	        </div>
-        </form>        
+        </form>
         {% if result %}
         <h3>Results</h3>
           <ul class="list-group">
 						{% for data in result %}
 						<a href="movieDetail/{{data.id}}" class="list-group-item">
-							<p>Title: {{data.title}}</p>
-							<p>Year: {{data.year}}</p>
-							<p>Duration: {{data.duration}}</p>
-							<p>Rate: {{data.mpaa_rating}}</p>
+							<p><b>Title:</b> {{data.title}}</p>
+							<p><b>Year:</b> {{data.year}}</p>
+							<p><b>Duration:</b>
+                {% if data.duration %}
+                  {{data.duration}}
+                {% else %}
+                  Not available
+                  {% endif %}
+              </p>
+							<p><b>Rate:</b>
+                {% if data.mpaa_rating %}
+                  {{data.mpaa_rating}}
+                {% else %}
+                  Not available
+                  {% endif %}
+              </p>
 
 		          <div class="clearfix"></div>
 						</a>
