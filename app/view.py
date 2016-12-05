@@ -28,9 +28,9 @@ result = connection.execute('select * from public.users WHERE id='9' LIMIT 1).fe
 print result -> (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123')
 
 result = connection.execute('select * from public.users).fetchall()
-print result -> 
-[(7, 2, 2, datetime.date(2012, 11, 29), u'James Lee', '(40.7128,74.0059)', u'leejamesws@gmail.com', u'123'), 
- (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123'), 
+print result ->
+[(7, 2, 2, datetime.date(2012, 11, 29), u'James Lee', '(40.7128,74.0059)', u'leejamesws@gmail.com', u'123'),
+ (9, 2, 2, datetime.date(2016, 10, 30), u'James Lee', '(40.7128,74.0059)', u'test@test.com', u'123'),
  (11, 1, 0, datetime.date(1996, 8, 18), u'Vanessa Wang', '(123,123)', u'viwang2@illinois.edu', u'123')]
 '''
 
@@ -54,29 +54,39 @@ def home():
 """
 Dashboard
 - User search movies, actors, directors and like them -> save like infomation into DB
-- User see who they are match with 
-- User can see suggested movies based on what they liked 
+- User see who they are match with
+- User can see suggested movies based on what they liked
 """
 @view.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     result = None
+    the_type = None
     if request.method == 'POST':
         try:
-            title = request.form['title']
-            person = request.form['person']
-            if title == '' and person == '':
-                return render_template('dashboard.html', result=result)
-            elif title != '' and person == '':
-                sql = "SELECT movies.id, title, duration, year, mpaa_rating FROM movies WHERE movies.title LIKE :title"
-            elif title == '' and person != '':
-                sql="SELECT movies.id, title, duration, year, mpaa_rating FROM movies INNER JOIN movie_people ON movies.id = movie_id INNER JOIN people ON person_id = people.id AND people.name LIKE :person"
+            the_type = request.form['type']
+            if request.form['type'] == 'movies':
+                title = request.form['title']
+                person = request.form['person']
+                if title == '' and person == '':
+                    return render_template('dashboard.html', result=result, the_type=the_type)
+                elif title != '' and person == '':
+                    sql = "SELECT movies.id, title, duration, year, mpaa_rating FROM movies WHERE movies.title LIKE :title"
+                elif title == '' and person != '':
+                    sql="SELECT movies.id, title, duration, year, mpaa_rating FROM movies INNER JOIN movie_people ON movies.id = movie_id INNER JOIN people ON person_id = people.id AND people.name LIKE :person"
+                else:
+                    sql="SELECT movies.id, title, duration, year, mpaa_rating FROM movies INNER JOIN movie_people ON movies.id = movie_id INNER JOIN people ON person_id = people.id AND people.name LIKE :person WHERE movies.title LIKE :title"
+                result = connection.execute(text(sql), title="%"+title+"%", person="%"+person+"%").fetchall()
             else:
-                sql="SELECT movies.id, title, duration, year, mpaa_rating FROM movies INNER JOIN movie_people ON movies.id = movie_id INNER JOIN people ON person_id = people.id AND people.name LIKE :person WHERE movies.title LIKE :title"
-            result = connection.execute(text(sql), title="%"+title+"%", person="%"+person+"%").fetchall()
+                person2 = request.form['person2']
+                if person2 == '':
+                    return render_template('dashboard.html', result=result, the_type=the_type)
+                else:
+                    sql="SELECT people.id, name, gender FROM people WHERE people.name LIKE :person2"
+                result = connection.execute(text(sql), person2="%"+person2+"%").fetchall()
         except:
-            flash('Failed to get movies', 'Error')
-    return render_template('dashboard.html', result=result)
+            flash('Failed to get movies or actors', 'Error')
+    return render_template('dashboard.html', result=result, the_type=the_type)
 
 """
 Matches
@@ -108,7 +118,7 @@ def matches():
             user = connection.execute(text(sql), matchID=id).fetchone()
             Matches.append(user)
     except:
-        flash('Failed to get matches', 'Error')      
+        flash('Failed to get matches', 'Error')
     return render_template('matches.html', newMatch=newMatch, Matches=Matches, matchesID=matchesID)
 
 @view.route('/matchDetail', methods=['GET'])
@@ -125,21 +135,21 @@ def movieDetail(movie_id):
         return redirect(url_for('view.movieDetail', movie_id=movie_id))
     try:
         sql = '''
-            SELECT title, duration, year, plot, mpaa_rating, 
-            (SELECT string_agg(people.name, ', ') FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id WHERE movie_people.person_role='Director' AND movie_people.movie_id=movies.id) 
+            SELECT title, duration, year, plot, mpaa_rating,
+            (SELECT string_agg(people.name, ', ') FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id WHERE movie_people.person_role='Director' AND movie_people.movie_id=movies.id)
             AS directors,
             (SELECT string_agg(people.name, '\n' ORDER BY people.name) FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id WHERE movie_people.person_role='Actor' AND movie_people.movie_id=movies.id)  AS actors,
-            string_agg(genre, ', ') AS genres FROM movies 
-            LEFT JOIN movie_genre ON movie_genre.movie_id=movies.id 
+            string_agg(genre, ', ') AS genres FROM movies
+            LEFT JOIN movie_genre ON movie_genre.movie_id=movies.id
             LEFT JOIN genres ON movie_genre.genre_id=genres.id
 
-            WHERE movies.id=:id 
+            WHERE movies.id=:id
             GROUP BY movies.id, title, duration, year, plot, mpaa_rating
         '''
         movie = connection.execute(text(sql), id=movie_id).fetchone()
         sql ='''
             SELECT people.id, people.name
-            FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id 
+            FROM movie_people LEFT JOIN people ON people.id=movie_people.person_id
             WHERE movie_people.person_role='Actor' AND movie_people.movie_id=:id
             ORDER BY people.name
         '''
@@ -246,10 +256,10 @@ def register():
     return render_template('register.html', form=form)
 
 """
-Profile 
-- Users can edit their profile 
+Profile
+- Users can edit their profile
 
-Successful: New Profile page 
+Successful: New Profile page
 Failed: render Profile page with Error
 """
 @view.route('/profile', methods=['GET', 'POST'])

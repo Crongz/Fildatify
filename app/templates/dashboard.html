@@ -9,7 +9,29 @@
     text-decoration: none;
     display: inline-block;
 }
+.div-inline{
+    display:inline-block !important;
+}
 </style>
+
+
+<script>
+        $(document).ready(function (){
+          $("#actor").hide();
+
+            $("#state").change(function() {
+                // foo is the id of the other select box
+                if ($(this).val() == "actors") {
+                    $("#actor").show();
+                    $("#movie").hide();
+                }else{
+                    $("#actor").hide();
+                    $("#movie").show();
+                }
+            });
+        });
+    </script>
+
 
 <div>
   <h1 style="text-align: center;">Your Dashboard</h1>
@@ -20,40 +42,75 @@
 		<div class="col-xs-7">
 			<!--Search for movies-->
 			<h3>Search for...</h3>
-        <form action="" method="post" class="form">
-					<div class="input-group">
-			      <span><input name="title" type="text" class="form-control" placeholder="Movie" style="width: 28%; margin:10px"></span>
-						<span><input name="person" type="text" class="form-control" placeholder="with Actor or Director" style="width: 28%; margin:10px"></span>
-	          <span class="input-group-btn">
-	          	<button class="btn btn-default" type="submit">Search</button>
-	          </span>
-	        </div>
+        <form action="/dashboard" method="post" class="form">
+          <div class="input-group">
+              <select class="form-control" name="type" id="state">
+                <option value="movies">Movies and Actors/Directors</option>
+                <option value="actors">Actors and Directors</option>
+              </select>
+
+               <span class="input-group-addon" style="opacity:0"></span>
+
+    			      <span id="movie">
+                  <input name="title" type="text" class="form-control" placeholder="Movie" style="width:48%; margin-right:5px">
+    						  <input name="person" type="text" class="form-control" placeholder="with Actor or Director" style="width:48%; margin-right:5px">
+                </span>
+
+                <span id="actor"><input name="person2" type="text" class="form-control" placeholder="Actor or Director" style="margin-right:5px"></span>
+
+                <span class="input-group-btn">
+    	          	<button class="btn btn-default" type="submit">Search</button>
+    	          </span>
+
+          </div>
         </form>
+
         {% if result %}
         <h3>Results</h3>
           <ul class="list-group">
-						{% for data in result %}
-						<a href="movieDetail/{{data.id}}" class="list-group-item">
-							<p><b>Title:</b> {{data.title}}</p>
-							<p><b>Year:</b> {{data.year}}</p>
-							<p><b>Duration:</b>
-                {% if data.duration %}
-                  {{data.duration}}
-                {% else %}
-                  Not available
-                  {% endif %}
-              </p>
-							<p><b>Rate:</b>
-                {% if data.mpaa_rating %}
-                  {{data.mpaa_rating}}
-                {% else %}
-                  Not available
-                  {% endif %}
-              </p>
+            {% if the_type == 'movies' %}
+              {% for data in result %}
+    						<a href="movieDetail/{{data.id}}" class="list-group-item">
+    							<p><b>Title:</b> {{data.title}}</p>
+    							<p><b>Year:</b> {{data.year}}</p>
+    							<p><b>Duration:</b>
+                    {% if data.duration %}
+                      {{data.duration}}
+                    {% else %}
+                      Not available
+                      {% endif %}
+                  </p>
+    							<p><b>Rate:</b>
+                    {% if data.mpaa_rating %}
+                      {{data.mpaa_rating}}
+                    {% else %}
+                      Not available
+                      {% endif %}
+                  </p>
 
-		          <div class="clearfix"></div>
-						</a>
-						{% endfor %}
+    		          <div class="clearfix"></div>
+    						</a>
+              {% endfor %}
+
+            {% else %}
+              {% for data in result %}
+                <a href="personDetail/{{data.id}}" class="list-group-item">
+                  <p><b>Name:</b> {{data.name}}</p>
+                  <p><b>Gender:</b>
+                    {% if data.gender == 1 %}
+                      Male
+                    {% elif data.gender == 0%}
+                      Female
+                    {% else %}
+                      Not available
+                    {% endif %}
+                    </p>
+                  <div class="clearfix"></div>
+                </a>
+              {% endfor %}
+
+            {% endif %}
+
 					</ul>
         {% endif %}
 		</div>

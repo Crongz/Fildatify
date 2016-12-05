@@ -12,7 +12,7 @@
     margin-right: 11em;
   }
 
-  h1{ 
+  h1{
   	font-family: "Helvetica";
   	text-align: center;
   }
@@ -24,6 +24,9 @@
     position: absolute;
     width:80%;
     z-index: 10;
+  }
+  #intro {
+    font-size: 16px;
   }
 </style>
 
@@ -48,12 +51,12 @@
 
     <div class="item">
       <img src="{{ url_for('static', filename='images/carousel3.jpg') }}">
-    </div>    
+    </div>
 
     <div class="item">
       <img src="{{ url_for('static', filename='images/carousel4.jpg') }}">
     </div>
-       
+
   </div>
 
   <!-- Left and right controls -->
@@ -69,11 +72,13 @@
 </div>
 <br>
 <br>
-<div>
+<div id="intro">
 	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris quis arcu leo. Donec metus felis, pellentesque placerat neque eu, viverra vehicula velit. Phasellus laoreet risus dui, id porttitor neque porttitor sit amet. Duis consectetur eros sit amet malesuada posuere. Praesent in leo quis libero mollis sodales. Cras a viverra est. Nullam a ornare est. Etiam mattis, dolor ac euismod ornare, purus turpis dapibus sem, id ultrices massa dui a odio. Donec id tortor a magna lobortis dapibus. Aliquam cursus, erat et placerat convallis, purus ante ornare nunc, vitae molestie neque tortor ac risus.
-		<br><br>
-		Integer eget mi tortor. Praesent ipsum metus, posuere et aliquet fermentum, gravida eu justo. Integer porta tempus molestie. Ut rhoncus cursus nibh congue mattis. Quisque maximus ac lectus quis pharetra. Praesent tempus iaculis quam, auctor posuere libero venenatis vel. Aliquam auctor massa in sagittis malesuada. Etiam id pharetra dolor. Cras scelerisque ante sem, quis dignissim arcu sollicitudin sit amet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus cursus urna nisl, vitae blandit turpis porta quis. Suspendisse elementum bibendum enim a dignissim. 
-	</p>
+    Welcome to Filmdatify, a fun and innovative web application that connects users to others
+     who have similar tastes in entertainment. Using the IMDB dataset, Filmdatify predicts which users
+     will be compatible based upon genre, actor, and director information. There are a countless number
+     of potential user groups: students, movie aficionados, young professionals, researchers,
+     lonely single adults, and even couples searching for new friends with shared interests will
+     be excited by the prospect of finding people who love the entertainment that they enjoy.	</p>
 </div>
 {% endblock %}
