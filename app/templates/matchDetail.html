@@ -24,12 +24,12 @@
 
 
   <script>
-  var userlat = 40.11461;
-  var userlng = -88.2771116;
-  var matchlat = 40.0539851;
-  var matchlng = -88.2878799;
-  var movlat = 40.0727559;
-  var movlng = -88.2542389;
+  var userlat = {{location.user.lat}};
+  var userlng = {{location.user.lng}};
+  var matchlat = {{location.match.lat}};
+  var matchlng = {{location.match.lng}};
+  var movlat = {{location.user.lat}};
+  var movlng = {{location.user.lng}};
 
     function initMap() {
       var user = {lat: userlat, lng: userlng};
@@ -81,14 +81,14 @@
       user_marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
       match_marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
 
-      // var request = {
-      //   location: user,
-      //   radius: '500',
-      //   query: 'movie theater'
-      // };
-      //
-      // service = new google.maps.places.PlacesService(map);
-      // service.textSearch(request, callback);
+      var request = {
+        location: user,
+        radius: '500',
+        query: 'movie theater'
+      };
+      
+      service = new google.maps.places.PlacesService(map);
+      service.textSearch(request, callback);
 
       infowindow = new google.maps.InfoWindow();
       var service = new google.maps.places.PlacesService(map);

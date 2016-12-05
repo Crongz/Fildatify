@@ -168,14 +168,16 @@ def matchDetail(match_id):
     CommonPeople = []
     for people in CommonPeopleNames:
         response = requests.get('https://api.themoviedb.org/3/search/person?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+str(people.name)).json()
-        print (response)
-        if response['errors'] == None:
-            if response['total_results'] != 0:
-                TMDBid = response['results'][0]['id']
-                peopleExtra = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
-                peopleExtra['DBid'] = movie.id
-                CommonPeople.append(peopleExtra)
-    return render_template('matchDetail.html', CommonMovies=CommonMovies, CommonPeople=CommonPeople)
+        if 'total_results' in response and response['total_results'] != 0:
+            TMDBid = response['results'][0]['id']
+            peopleExtra = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
+            peopleExtra['DBid'] = movie.id
+            CommonPeople.append(peopleExtra)
+    sql = "SELECT id, st_astext(location) as location FROM users WHERE id IN (:current_id,:match_id)"
+    location = connection.execute(text(sql), current_id=current_user.id, match_id=match_id).fetchall()
+    location = {'user': {'lat':location[0].location.split(' ')[0][6:], 'lng':location[0].location.split(' ')[1][:-1]},
+                'match': {'lat':location[1].location.split(' ')[0][6:], 'lng':location[1].location.split(' ')[1][:-1]}}
+    return render_template('matchDetail.html', CommonMovies=CommonMovies, CommonPeople=CommonPeople, location=location)
 
 @view.route('/movieDetail/<movie_id>', methods=['GET','POST'])
 @login_required
