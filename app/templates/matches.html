@@ -19,61 +19,49 @@
 	</div>
 	<div class="row">
 		<div class="list-group list-group-horizontal">
-			<a href="/matchDetail/{{match_id}}" class="list-group-item">
+			{% for match in Matches %}
+			<a href="/matchDetail/{{match.id}}" class="list-group-item">
 				<div class="row">
 					<div class="col-sm-12">
-						<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-						<p class="text-center">Name</p>
-						<p class="text-center">Age</p>
-						<p class="text-center">Location</p>
+						<img class="img-responsive thumbnail center-block" src="{{match.picture_url}}"/>
+						<p class="text-center">{{match.name}}</p>
+						<p class="text-center">{{match.miles_apart |round}} miles away</p>
 					</div>
 				</div>
 			</a>
-			<a href="#" class="list-group-item">
-				<div class="row">
-					<div class="col-sm-12">
-						<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-						<p class="text-center">Name</p>
-						<p class="text-center">Age</p>
-						<p class="text-center">Location</p>
-					</div>
-				</div>
-			</a>
-			<a href="#" class="list-group-item">
-				<div class="row">
-					<div class="col-sm-12">
-						<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-						<p class="text-center">Name</p>
-						<p class="text-center">Age</p>
-						<p class="text-center">Location</p>
-					</div>
-				</div>
-			</a>
+			{% endfor %}
 		</div>
 	</div>
 	<hr>
 	<div class="row">
-		<div class="container" style="padding-left:50px; padding-right: 50px;">
+		<div class="container">
+			{% if newMatch %}
 			<div class="col-sm-3">
 				<h3>New Match</h3>
 				<div>
-					<img class="img-responsive thumbnail" src="{{ url_for('static', filename='images/RandomMan1.jpg') }}" id="matchImg">
-					<h3> Blake Peckham </h3>
-					<h4> Age: 22 </h4>
-					<h4> Location: Chicago </h4>
+
+					<img class="img-responsive thumbnail center-block" src="{{newMatch.picture_url}}">
+					<h3> {{newMatch.name}} </h3>
+					{% if newMatch.gender == 1%}
+						<h4> Gender: Male </h4>
+					{% elif newMatch.gender == 0 %}
+						<h4> Gender: Female </h4>
+					{% else%}
+						<h4> Gender: Other </h4>
+					{% endif %}
+					<h4> Location: {{newMatch.miles_apart|round}} miles away </h4>
 					<div class="btn-group btn-group-justified" role="group">
 					  <div class="btn-group" role="group">
-  						<form accept-charset="UTF-8" action="/matches" method="POST">
-								<input name="id" type="hidden" value="{{newMatch.id}}"> 
+  						<form accept-charset="UTF-8" action="/accpet/{{newMatchID[0]}}/{{current_user.id}}" method="POST">
+								<input name="MatchId" type="hidden" value="{{newMatch.id[0]}}"> 
 								<input name="state" type="hidden" value="yes"> 
 						    <button type="submit" class="btn btn-success">Yes</button>
 					    </form>
 					  </div>
 					  <div class="btn-group" role="group">
-  						<form accept-charset="UTF-8" action="/matches" method="POST">
-								<input name="id" type="hidden" value="{{newMatch.id}}"> 
+  						<form accept-charset="UTF-8" action="/reject/{{newMatchID[0]}}/{{current_user.id}}" method="POST">								<input name="MatchId" type="hidden" value="{{newMatch.id[0]}}"> 
 								<input name="state" type="hidden" value="no"> 
-						    <button type="button" class="btn btn-danger">No</button>
+						    <button type="submit" class="btn btn-danger">No</button>
  					    </form>
 					  </div>
 					</div>
@@ -84,65 +72,39 @@
 				<div class="row">
 					<h3>Movies</h3>
 					<div class="list-group list-group-horizontal">
-						<a href="movieDetail/123" class="list-group-item">
-							<div class="row">
-								<div class="col-sm-12">
-									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-									<p class="text-center">Title</p>
-								</div>
-							</div>
-						</a>
-
-						<a href="movieDetail/123" class="list-group-item">
-							<div class="row">
-								<div class="col-sm-12">
-									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-									<p class="text-center">Title</p>
-								</div>
-							</div>
-						</a>
-
-						<a href="#" class="list-group-item">
-							<div class="row">
-								<div class="col-sm-12">
-									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-									<p class="text-center">Title</p>
-								</div>
-							</div>
-						</a>
+						{% for movie in CommonMovies%}
+            <a href="movieDetail/{{movie.DBid}}" class="list-group-item">
+              <div class="row">
+                <div class="col-sm-12">
+                  <img class="img-responsive thumbnail center-block" style="width:150px; height:200px;"	src="http://image.tmdb.org/t/p/w342{{movie.poster_path}}"/>
+                  <p class="text-center">{{movie.title}}</p>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
 					</div>
 				</div>
 
 				<div class="row">
 					<h3>Actors/Actresses/Directors</h3>
 					<div class="list-group list-group-horizontal">
-					  <a href="personDetail/123" class="list-group-item">
+						{% for person in CommonPeople %}
+					  <a href="personDetail/{{person.DBid}}" class="list-group-item">
 							<div class="row">
 								<div class="col-sm-12">
+								{% if person.profile_path %}
+                  <img class="img-responsive thumbnail center-block" src="http://image.tmdb.org/t/p/w342{{person.profile_path}}"/>
+                 {% else %}
 									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-									<p class="text-center">Name</p>
+                 {% endif%}
+									<p class="text-center">{{person.name}}</p>
 								</div>
 							</div>
 						</a>
-						<a href="#" class="list-group-item">
-							<div class="row">
-								<div class="col-sm-12">
-									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-									<p class="text-center">Name</p>
-								</div>
-							</div>
-						</a>
-						<a href="#" class="list-group-item">
-							<div class="row">
-								<div class="col-sm-12">
-									<img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-									<p class="text-center">Name</p>
-								</div>
-							</div>
-						</a>
+						{% endfor %}
 					</div>
 				</div>
-
+			{% endif %}
 			</div>
 		</div>
 	</div>

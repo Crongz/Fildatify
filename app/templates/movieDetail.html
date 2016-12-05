@@ -63,7 +63,7 @@
 		{% endif %}
 		<div class="col-sm-4" id="col1">
 			{% if movieExtra.poster_path %}
-			<img class="img-responsive center-block thumbnail" src={{"http://image.tmdb.org/t/p/w342"+movieExtra.poster_path}}>
+			<img class="img-responsive" src="http://image.tmdb.org/t/p/w342{{movieExtra.poster_path}}"/>
 			{% else %}
 			<img class="img-responsive thumbnail center-block" src="http://placehold.it/300x500"/>
 			{% endif %}
@@ -71,7 +71,7 @@
 
 		<div class="col-sm-8" id="col2">
 			<p> Year: {{movie.year}} </p>
-			<p> Rating: {{movie.rating}} </p>
+			<p> Rating: {{movie.mpaa_rating}} </p>
 			<p> Duration: {{movie.duration}} </p>
 			<p> Genre(s): {{movie.genres}} </p>
 			<br>
