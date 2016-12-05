@@ -66,14 +66,14 @@
 
       user_marker.addListener('click', function() {
         var infoWindow = new google.maps.InfoWindow({
-          content: '<h4>Your Location</h4>' + '<p>{Insert city here}</p>'
+          content: '<h4>Your Location</h4>'
         });
         infoWindow.open(map, user_marker)
       });
 
       match_marker.addListener('click', function() {
         var infoWindow = new google.maps.InfoWindow({
-          content: '<h4>Your Match\'s Location</h4>' + '<p>{Insert city here}</p>'
+          content: '<h4>Your Match\'s Location</h4>'
         });
         infoWindow.open(map, match_marker)
       });
