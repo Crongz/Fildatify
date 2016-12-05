@@ -62,8 +62,11 @@ for i in ids:
     results = cur.fetchall()
     print("Generating recs for UID %d" % i)
     for result in results:
-        q = 'INSERT INTO recommendations (user_id, movie_id) VALUES (%d, %d)' % (i, result[0])
-        cur.execute(q)
-        print("Added rec for UID %d" % i)
+        q = 'INSERT INTO recommendations (user_id, movie_id) VALUES (%s, %s)'
+        cur.execute(q, (i, result[0]))
+        print(cur.query)
+        print(cur.statusmessage)
+        print("Added rec for UID %d m %d" % (i, result[0]))
+        conn.commit()
 
 
