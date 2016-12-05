@@ -114,62 +114,36 @@
         <div class="row">
           <h3>Common Movies</h3>
           <div class="list-group list-group-horizontal">
-            <a href="movieDetail/123" class="list-group-item">
+            {% for movie in CommonMovies%}
+            <a href="movieDetail/{{movie.DBid}}" class="list-group-item">
               <div class="row">
                 <div class="col-sm-12">
-                  <img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-                  <p class="text-center">Title</p>
+                  <img class="img-responsive thumbnail center-block" style="width:150px; height:200px;" src="http://image.tmdb.org/t/p/w342{{movie.poster_path}}"/>
+                  <p class="text-center">{{movie.title}}</p>
                 </div>
               </div>
             </a>
-
-            <a href="movieDetail/123" class="list-group-item">
-              <div class="row">
-                <div class="col-sm-12">
-                  <img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-                  <p class="text-center">Title</p>
-                </div>
-              </div>
-            </a>
-
-            <a href="#" class="list-group-item">
-              <div class="row">
-                <div class="col-sm-12">
-                  <img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-                  <p class="text-center">Title</p>
-                </div>
-              </div>
-            </a>
+            {% endfor %}
           </div>
         </div>
 
         <div class="row">
           <h3>Common Actors/Actresses/Directors</h3>
           <div class="list-group list-group-horizontal">
-            <a href="personDetail/123" class="list-group-item">
+            {% for person in CommonPeople %}
+            <a href="personDetail/{{person.DBid}}" class="list-group-item">
               <div class="row">
                 <div class="col-sm-12">
+                {% if person.profile_path %}
+                  <img class="img-responsive thumbnail center-block" src="http://image.tmdb.org/t/p/w342{{person.profile_path}}"/>
+                 {% else %}
                   <img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-                  <p class="text-center">Name</p>
+                 {% endif%}
+                  <p class="text-center">{{person.name}}</p>
                 </div>
               </div>
             </a>
-            <a href="#" class="list-group-item">
-              <div class="row">
-                <div class="col-sm-12">
-                  <img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-                  <p class="text-center">Name</p>
-                </div>
-              </div>
-            </a>
-            <a href="#" class="list-group-item">
-              <div class="row">
-                <div class="col-sm-12">
-                  <img class="img-responsive thumbnail center-block" src="http://placehold.it/150x200"/>
-                  <p class="text-center">Name</p>
-                </div>
-              </div>
-            </a>
+            {% endfor %}
           </div>
         </div>
 
