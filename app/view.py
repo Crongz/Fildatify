@@ -241,11 +241,20 @@ def register():
                 hashKey = hashlib.md5(file.read()).hexdigest() 
                 filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
                 request.files['file'].save(os.path.join(APP_ROOT+'/UploadImage', filename))
-            sql = "INSERT INTO public.users (email, password, gender, interested_in, birthdate, name, location, picture_url, provided_location) VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, :location, :filename, :provided_location)"
-            connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], location=form.data['location'], filename=filename, provided_location = form.data['provided_location'])
+
+            pair = form.data['location'].split(',')
+            a = float(pair[0].strip('('))
+            b = float(pair[1].strip(')'))
+
+            location = 'POINT(%s %s)' % (str(b), str(a))
+            sql = "INSERT INTO public.users " \
+                  "(email, password, gender, interested_in, birthdate, name, location, picture_url, provided_location) " \
+                  "VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, ST_PointFromText('%s', 4326), :filename, :provided_location)" % location
+            connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], filename=filename, provided_location = form.data['provided_location'])
             flash('Successfully Registered', 'Success')
             return redirect(url_for('view.home'))
-        except:
+        except Exception as e:
+            raise e
             flash('Something went wrong. Please try it again', 'Error')
     return render_template('register.html', form=form)
 
