@@ -14,7 +14,7 @@ class RegisterForm(FlaskForm):
     birthdate = DateField(format='%Y-%m-%d')
     location = SelectField( choices=[('(41.8781,87.6298)', 'Chicago'), ('(40.1164,88.2434)', 'Champaign'), ('(39.7817,89.6501)', 'Springfield')])
     provided_location = TextField(validators=[InputRequired()])
-    file = FileField()
+    picture_url = TextField()
 
     def validate_email(self, field):
         sql = "SELECT COUNT(*) FROM public.users WHERE email='{}'".format(self.email.data)
@@ -30,4 +30,4 @@ class ProfileForm(FlaskForm):
     birthdate = DateField(format='%Y-%m-%d')
     location = SelectField( choices=[('(41.8781,-87.6298)', 'Chicago'), ('(40.1164,-88.2434)', 'Champaign'), ('(39.7817,-89.6501)', 'Springfield')])
     provided_location = TextField(validators=[InputRequired()])
-    file = FileField()
+    picture_url = TextField()

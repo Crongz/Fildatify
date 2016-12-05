@@ -180,6 +180,7 @@ def personDetail(person_id):
     if response['total_results'] != 0:
         TMDBid = response['results'][0]['id']
         person = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
+        print (person)
     return render_template('personDetail.html', person=person, person_id=person_id)
 
 """
@@ -223,25 +224,11 @@ Register
 Successful: Home page (view.home)
 Failed: render Register page with Error
 """
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-
 @view.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         try:
-            file = request.files['file']
-            filename = ''
-            if file and allowed_file(file.filename):
-                hashKey = hashlib.md5(file.read()).hexdigest() 
-                filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
-                request.files['file'].save(os.path.join(APP_ROOT+'/UploadImage', filename))
-
             pair = form.data['location'].split(',')
             a = float(pair[0].strip('('))
             b = float(pair[1].strip(')'))
@@ -249,8 +236,8 @@ def register():
             location = 'POINT(%s %s)' % (str(b), str(a))
             sql = "INSERT INTO public.users " \
                   "(email, password, gender, interested_in, birthdate, name, location, picture_url, provided_location) " \
-                  "VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, ST_PointFromText('%s', 4326), :filename, :provided_location)" % location
-            connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], name=form.data['name'], filename=filename, provided_location = form.data['provided_location'])
+                  "VALUES (:email, :password, :gender, :interested_in, :birthdate, :name, ST_PointFromText(:location, 4326), :picture_url, :provided_location)"
+            connection.execute(text(sql), email=form.data['email'], password=form.data['password'], gender=form.data['gender'], interested_in=form.data['interested_in'], birthdate=form.data['birthdate'], location=location, name=form.data['name'], picture_url=form.data['picture_url'], provided_location = form.data['provided_location'])
             flash('Successfully Registered', 'Success')
             return redirect(url_for('view.home'))
         except Exception as e:
@@ -270,20 +257,18 @@ Failed: render Profile page with Error
 def profile():
     form = ProfileForm(obj=current_user)
     if request.method == 'POST' and form.validate():
-        try:
-            file = request.files['file']
-            filename = current_user.picture_url
-            if file and allowed_file(file.filename):
-                hashKey = hashlib.md5(file.read()).hexdigest() 
-                filename = secure_filename(file.filename).rsplit('.', 1)[0]+ hashKey+ '.'+ secure_filename(file.filename).rsplit('.', 1)[1]
-                request.files['file'].save(os.path.join(APP_ROOT+'/UploadImage', filename))
-                # file.save(os.path.join(APP_ROOT+'/UploadImage', filename))
+        # try:
+            pair = form.data['location'].split(',')
+            a = float(pair[0].strip('('))
+            b = float(pair[1].strip(')'))
+
+            location = 'POINT(%s %s)' % (str(b), str(a))
             sql = "UPDATE public.users SET (gender,interested_in,birthdate,location,picture_url,provided_location) = ('{}','{}','{}','{}','{}','{}') WHERE ID = {}"\
-            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], form.data['location'], filename, form.data['provided_location'], current_user.id)
+            .format(form.data['gender'], form.data['interested_in'], form.data['birthdate'], location, form.data['picture_url'], form.data['provided_location'], current_user.id)
             connection.execute(sql)
             flash('Successfully Updated', 'Success')
             return redirect(url_for('view.profile'))
-        except:
+        # except:
             flash('Something went wrong. Please try it again', 'Error')
     else:
         return render_template('profile.html', form=form)
