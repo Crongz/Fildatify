@@ -73,7 +73,7 @@
 		<div class="col-sm-7">
 			<p> Birthday: {{person.birthday}} </p>
 			<p> Place of Birth: {{person.place_of_birth}} </p>
-			ooomn
+			{% if person.gender == 1 %}
 				<p> Gender: Female</p>
 			{% elif person.gender == 2 %}
 				<p> Gender: Male</p>
