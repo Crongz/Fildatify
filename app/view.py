@@ -137,8 +137,6 @@ def matches():
 
     sql = "SELECT a.match_id, u2.user_id FROM ( SELECT match_id FROM matched_user WHERE user_id=:uid AND state IS NULL) a INNER JOIN matched_user u2 ON(u2.user_id!=:uid AND u2.match_id=a.match_id) WHERE u2.state IS NULL OR u2.state=TRUE LIMIT 1"
     newMatchID = connection.execute(text(sql), uid=current_user.id).fetchone()
-    print ('newMatchID',newMatchID[0])
-    print ('current_user.id',current_user.id)
     CommonMovies = []
     CommonPeople = []
     if newMatchID != None:
@@ -276,7 +274,13 @@ def personDetail(person_id):
         TMDBid = response['results'][0]['id']
         person = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
         print (person)
-    return render_template('personDetail.html', person=person, person_id=person_id)
+    sql ='''
+        SELECT COUNT(*)
+        FROM user_person_opinions
+        WHERE user_id = :id AND person_id = :person_id
+        '''
+    exist = connection.execute(text(sql), id=current_user.id ,person_id=person_id).fetchone()
+    return render_template('personDetail.html', person=person, person_id=person_id, count = exist.count)
 
 """
 Login
