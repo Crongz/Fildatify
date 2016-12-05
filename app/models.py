@@ -10,15 +10,19 @@ class User(UserMixin):
         self.name = None
         self.location = None
         self.email = None
+        self.picture_url = None
+        self.provided_location = None
 
     def loadData(self, data):
-        self.id = data[0]
-        self.gender = data[1]
-        self.interested_in = data[2]
-        self.birthdate = data[3]
-        self.name = data[4]
-        self.location = data[5]
-        self.email = data[6]
+        self.id = data.id
+        self.gender = data.gender
+        self.interested_in = data.interested_in
+        self.birthdate = data.birthdate
+        self.name = data.name
+        self.location = data.location
+        self.email = data.email
+        self.provided_location = data.provided_location
+        self.picture_url = data.picture_url
 
         
     def __repr__(self):

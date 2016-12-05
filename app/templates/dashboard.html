@@ -33,10 +33,12 @@
         <h3>Results</h3>
           <ul class="list-group">
 						{% for data in result %}
-						<a href="{{data.id}}" class="list-group-item">
-							{% for attribute in data %}
-								{{ attribute}}
-							{% endfor %}
+						<a href="movieDetail/{{data.id}}" class="list-group-item">
+							<p>Title: {{data.title}}</p>
+							<p>Year: {{data.year}}</p>
+							<p>Duration: {{data.duration}}</p>
+							<p>Rate: {{data.mpaa_rating}}</p>
+
 		          <div class="clearfix"></div>
 						</a>
 						{% endfor %}
