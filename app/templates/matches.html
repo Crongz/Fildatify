@@ -52,17 +52,16 @@
 					<h4> Location: {{newMatch.miles_apart|round}} miles away </h4>
 					<div class="btn-group btn-group-justified" role="group">
 					  <div class="btn-group" role="group">
-  						<form accept-charset="UTF-8" action="/accpet/{{newMatch.id}}/{{current_user.id}}" method="POST">
-								<input name="MatchId" type="hidden" value="{{newMatch.id}}"> 
+  						<form accept-charset="UTF-8" action="/accpet/{{newMatchID[0]}}/{{current_user.id}}" method="POST">
+								<input name="MatchId" type="hidden" value="{{newMatch.id[0]}}"> 
 								<input name="state" type="hidden" value="yes"> 
 						    <button type="submit" class="btn btn-success">Yes</button>
 					    </form>
 					  </div>
 					  <div class="btn-group" role="group">
-  						<form accept-charset="UTF-8" action="/matches" method="POST">
-								<input name="MatchId" type="hidden" value="{{newMatch.id}}"> 
+  						<form accept-charset="UTF-8" action="/reject/{{newMatchID[0]}}/{{current_user.id}}" method="POST">								<input name="MatchId" type="hidden" value="{{newMatch.id[0]}}"> 
 								<input name="state" type="hidden" value="no"> 
-						    <button type="button" class="btn btn-danger">No</button>
+						    <button type="submit" class="btn btn-danger">No</button>
  					    </form>
 					  </div>
 					</div>

@@ -96,8 +96,20 @@ def dashboard():
 @login_required
 def accpet(matchID,userID):
     try:
+        print('accept', matchID)
         sql = "UPDATE public.matched_user SET (state) = (:state) WHERE match_id = :match_id AND user_id =:user_id"
         connection.execute(text(sql), match_id=matchID, user_id=userID, state='TRUE')
+    except:
+        flash('Failed to upload rating', 'Error')
+    return redirect(url_for('view.matches'))
+
+@view.route('/reject/<matchID>/<userID>', methods=['POST'])
+@login_required
+def reject(matchID,userID):
+    try:
+        print('reject', matchID)
+        sql = "UPDATE public.matched_user SET (state) = (:state) WHERE match_id = :match_id AND user_id =:user_id"
+        connection.execute(text(sql), match_id=matchID, user_id=userID, state='FALSE')
     except:
         flash('Failed to upload rating', 'Error')
     return redirect(url_for('view.matches'))
@@ -113,6 +125,8 @@ def matches():
 
     sql = "SELECT a.match_id, u2.user_id FROM ( SELECT match_id FROM matched_user WHERE user_id=:uid AND state IS NULL) a INNER JOIN matched_user u2 ON(u2.user_id!=:uid AND u2.match_id=a.match_id) WHERE u2.state IS NULL OR u2.state=TRUE LIMIT 1"
     newMatchID = connection.execute(text(sql), uid=current_user.id).fetchone()
+    print ('newMatchID',newMatchID[0])
+    print ('current_user.id',current_user.id)
     CommonMovies = []
     CommonPeople = []
     if newMatchID != None:
@@ -121,21 +135,25 @@ def matches():
         sql = "SELECT id, title FROM movies WHERE id IN (SELECT u1.movie_id FROM user_movie_opinions u1 INNER JOIN user_movie_opinions u2 ON  (u2.user_id=:matchedUID AND u2.movie_id=u1.movie_id AND u2.personal_rating >= 0) WHERE u1.user_id=:currentID AND u1.personal_rating >= 0) LIMIT 6"
         CommonMoviesNames = connection.execute(text(sql), matchedUID=newMatchID[1], currentID=current_user.id).fetchall()
         for movie in CommonMoviesNames:
-            response = requests.get('https://api.themoviedb.org/3/search/movie?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+movie.title).json()
-            if 'total_results' in response and response['total_results'] != 0:
-                TMDBid = response['results'][0]['id']
-                movieExtra = requests.get('https://api.themoviedb.org/3/movie/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
-                movieExtra['DBid'] = movie.id
-                CommonMovies.append(movieExtra)
+            try:
+                response = requests.get('https://api.themoviedb.org/3/search/movie?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+movie.title).json()
+                if 'total_results' in response and response['total_results'] != 0:
+                    TMDBid = response['results'][0]['id']
+                    movieExtra = requests.get('https://api.themoviedb.org/3/movie/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
+                    movieExtra['DBid'] = movie.id
+                    CommonMovies.append(movieExtra)
+            except: pass
         sql = "SELECT id, name FROM people WHERE id IN (SELECT u1.person_id FROM user_person_opinions u1 INNER JOIN user_person_opinions u2 ON  (u2.user_id=:matchedUID AND u2.person_id=u1.person_id AND u2.personal_rating >= 0) WHERE u1.user_id=:currentID AND u1.personal_rating >= 0) LIMIT 6"
         CommonPeopleNames = connection.execute(text(sql), matchedUID=newMatchID[1], currentID=current_user.id).fetchall()
         for people in CommonPeopleNames:
-            response = requests.get('https://api.themoviedb.org/3/search/person?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+people.name).json()
-            if 'total_results' in response and response['total_results'] != 0:
-                TMDBid = response['results'][0]['id']
-                peopleExtra = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
-                peopleExtra['DBid'] = movie.id
-                CommonPeople.append(peopleExtra)
+            try:
+                response = requests.get('https://api.themoviedb.org/3/search/person?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+people.name).json()
+                if 'total_results' in response and response['total_results'] != 0:
+                    TMDBid = response['results'][0]['id']
+                    peopleExtra = requests.get('https://api.themoviedb.org/3/person/'+str(TMDBid)+'?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US').json()
+                    peopleExtra['DBid'] = movie.id
+                    CommonPeople.append(peopleExtra)
+            except: pass
     sql = "SELECT a.match_id, u2.user_id FROM (SELECT match_id FROM matched_user WHERE user_id=:currentUID AND state=TRUE) a INNER JOIN matched_user u2 ON (u2.user_id!=:currentUID AND u2.match_id=a.match_id) WHERE u2.state=TRUE"
     matchesID = connection.execute(text(sql), currentUID=current_user.id).fetchall()
 
@@ -145,7 +163,7 @@ def matches():
         Matches.append(user)
 
     
-    return render_template('matches.html', newMatch=newMatch, Matches=Matches, CommonMovies=CommonMovies, CommonPeople=CommonPeople)
+    return render_template('matches.html', newMatch=newMatch, newMatchID=newMatchID, Matches=Matches, CommonMovies=CommonMovies, CommonPeople=CommonPeople)
 
 @view.route('/matchDetail/<match_id>', methods=['GET'])
 @login_required
