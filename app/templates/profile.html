@@ -3,7 +3,7 @@
 
 {% block body %}
 <div class="container">
-  <form class="form-horizontal" role="form" action="/profile" enctype='multipart/form-data' method="POST">
+  <form class="form-horizontal" role="form" action="/profile" method="POST">
     <h2>Profile</h2>
     {{ form.hidden_tag() }}
     {% for field in form.errors %}
@@ -14,12 +14,6 @@
       {% endfor %}
     {% endfor %}
     <div class="form-group">
-      <label for="firstName" class="col-sm-3 control-label">Upload Image</label>
-      <div class="col-sm-6">
-        {{form.file(class="form-control")}}
-      </div>
-    </div>
-    <div class="form-group">
       <label for="Name" class="col-sm-3 control-label">Full Name</label>
       <div class="col-sm-6">
         {{form.name(class="form-control", placeholder="Name", required=true, disabled=true)}}
@@ -29,6 +23,12 @@
       <label for="email" class="col-sm-3 control-label">Email</label>
       <div class="col-sm-6">
         {{form.email(class="form-control", placeholder="Email", required=true, disabled=true)}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="photo_url" class="col-sm-3 control-label">Photo Url</label>
+      <div class="col-sm-6">
+        {{form.picture_url(class="form-control", placeholder="Photo Url")}}
       </div>
     </div>
     <div class="form-group">
@@ -59,15 +59,6 @@
       <label class="control-label col-sm-3">Interested In</label>
       <div class="col-sm-6">
         {{form.interested_in(class="form-control", required=true)}}
-      </div>
-    </div> <!-- /.form-group -->
-    <div class="form-group">
-      <div class="col-sm-6 col-sm-offset-3">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox">I accept <a href="#">terms</a>
-          </label>
-        </div>
       </div>
     </div> <!-- /.form-group -->
     <div class="form-group">
