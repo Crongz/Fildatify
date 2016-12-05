@@ -78,7 +78,7 @@ def dashboard():
             flash('Failed to get movies', 'Error')
     try:
         recommendations = []
-        sql = "SELECT movies.id, title FROM movies INNER JOIN recommendations ON movies.id=recommendations.movie_id AND recommendations.user_id=:user_id LIMIT 10"
+        sql = "SELECT movie_id AS id, title FROM recommendations INNER JOIN movies ON movies.id=recommendations.movie_id WHERE recommendations.user_id=:user_id ORDER BY RANDOM() LIMIT 10"
         recommendationsDB = connection.execute(text(sql), user_id=current_user.id).fetchall()
         for movie in recommendationsDB:
             response = requests.get('https://api.themoviedb.org/3/search/movie?api_key=f1e1b59caa89beb73c8529be3390ef01&language=en-US&query='+movie.title).json()
