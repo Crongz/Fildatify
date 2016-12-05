@@ -107,23 +107,23 @@ def matches():
     Matches = []
     # try:
     print('current_user.id',current_user.id)
-    sql = "SELECT user_id FROM matched_user WHERE user_id!=:current_id AND state!=FALSE AND match_id IN (SELECT match_id FROM matched_user WHERE user_id=:current_id AND state=NULL) LIMIT 1"
-    newMatchID = connection.execute(text(sql), current_id=current_user.id).fetchone()
+    sql = "SELECT a.match_id, u2.user_id FROM ( SELECT match_id FROM matched_user WHERE user_id=:uid AND state IS NULL) a INNER JOIN matched_user u2 ON(u2.user_id!=:uid AND u2.match_id=a.match_id) WHERE u2.state IS NULL OR u2.state=TRUE LIMIT 1"
+    newMatchID = connection.execute(text(sql), uid=current_user.id).fetchone()
     print('newMatchID',newMatchID)
+
     if newMatchID != None:
-        sql = "SELECT * FROM users WHERE id = :newMatchID)"
-        newMatch = connection.execute(text(sql), newMatchID=newMatchID).fetchone()
-    # except:
-    #     flash('Failed to get new match', 'Error')
-    # try:
-    #     sql = "SELECT user_id FROM matched_user WHERE user_id!=:current_id AND state=true AND match_id IN (SELECT match_id FROM matched_user WHERE user_id=:current_id AND state=true LIMIT 1)"
-    #     matchesID = connection.execute(text(sql), current_id=current_user.id).fetchall()
-    #     for id in matchesID:
-    #         sql = "SELECT * FROM users WHERE id = :matchID)"
-    #         user = connection.execute(text(sql), matchID=id).fetchone()
-    #         Matches.append(user)
-    # except:
-    #     flash('Failed to get matches', 'Error')
+        sql = "SELECT name, email, picture_url, gender, provided_location, st_distance(location, (SELECT location FROM users WHERE id=:currentID))/1609.34 AS miles_apart FROM users WHERE id = :matchedUID"
+        newMatch = connection.execute(text(sql), matchedUID=newMatchID[1], currentID=current_user.id).fetchone()
+
+
+    sql = "SELECT a.match_id, u2.user_id FROM (SELECT match_id FROM matched_user WHERE user_id=:currentUID AND state=TRUE) a INNER JOIN matched_user u2 ON (u2.user_id!=:currentUID AND u2.match_id=a.match_id) WHERE u2.state=TRUE"
+    matchesID = connection.execute(text(sql), currentUID=current_user.id).fetchall()
+
+    for matchedID in matchesID:
+        sql = "SELECT name, email, picture_url, gender, provided_location, st_distance(location, (SELECT location FROM users WHERE id=:currentID))/1609.34 AS miles_apart FROM users WHERE id = :matchedUID"
+        user = connection.execute(text(sql),  matchedUID=matchedID[1], currentID=current_user.id).fetchone()
+        Matches.append(user)
+
     print('newMatch',newMatch)
     return render_template('matches.html', newMatch=newMatch, Matches=Matches, matchesID=matchesID)
 
